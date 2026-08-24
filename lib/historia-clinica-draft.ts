@@ -3,9 +3,11 @@ import "server-only"
 import {
   historiaClinicaDraftSchema,
   historiaClinicaJsonSchema,
+  historiaClinicaLeafKeys,
   type HistoriaClinicaDraft,
 } from "@/lib/historia-clinica-schema"
 import { parseGeminiJsonObject } from "@/lib/gemini-json"
+import { z } from "zod"
 
 type JsonSchemaNode = {
   $defs?: Record<string, JsonSchemaNode>
@@ -31,30 +33,110 @@ const FORBIDDEN_CHART_PATTERNS = [
 ]
 
 const HISTORIA_CLINICA_STYLE_GUIDE =
-  "Redacta como historia clínica de Medicina Interna: narrativa temporal clara, lenguaje médico profesional, problemas clínicos bien representados y solo datos respaldados. Usa null cuando falte soporte; no inventes ni escribas dudas o meta-comentarios."
+  "Redacta como historia clínica de Medicina Interna: narrativa temporal clara, lenguaje médico profesional, problemas clínicos bien representados y solo datos respaldados. Omite rutas sin soporte; no inventes ni escribas dudas, ausencias de información o meta-comentarios."
 
 const IMPRESION_DIAGNOSTICA_FIELD_GUIDE =
   "Impresión diagnóstica: problema_principal es el problema clínico central actual y debe llenarse si existe motivo de consulta o enfermedad actual; redacta un título clínico breve, no una frase genérica. problemas_activos_secundarios son condiciones, hallazgos o factores actuales relevantes que acompañan al problema principal e influyen en diagnóstico, pronóstico o manejo. Para cada item, titulo es el nombre breve; pertinentes_positivos son datos que lo sustentan; pertinentes_negativos son ausencias explícitas que delimitan complicaciones o diferenciales. No uses esta lista para diferenciales especulativos."
 
 export const HISTORIA_CLINICA_EXTRACTION_PROMPT = [
-  "Escucha el audio completo y extrae una historia clínica estructurada en español.",
+  "Convierte la evidencia del audio en campos de una historia clínica estructurada en español.",
   HISTORIA_CLINICA_STYLE_GUIDE,
   IMPRESION_DIAGNOSTICA_FIELD_GUIDE,
   "Criterios: motivo breve; enfermedad actual narrativa; antecedentes y examen físico conservadores; impresión diagnóstica orientada por problemas. Las negaciones solo pueden incluirse cuando sean explícitas.",
-  "plan_manejo.d1 y plan_manejo.m1 deben ser null.",
-  "Conserva todas las claves del esquema. Usa null o [] cuando no haya información respaldada por el audio.",
-  "Devuelve únicamente el objeto JSON solicitado, sin Markdown ni texto adicional.",
+  "Incluye únicamente hechos respaldados. Omite los campos sin información y no incluyas plan_manejo.d1 ni plan_manejo.m1.",
+  "Si existe un síntoma o motivo de consulta, completa motivo_consulta.texto, redacta enfermedad_actual.texto y define impresion_diagnostica.problema_principal.",
+  "Cada path debe coincidir exactamente con una de las rutas permitidas.",
 ].join(" ")
 
-export const historiaClinicaGeminiResponseSchema = stripUnsupportedSchemaFields(
-  structuredClone(historiaClinicaJsonSchema) as JsonSchemaNode
-)
+export const historiaClinicaExtractionResponseSchema = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    campos: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        properties: {
+          path: { type: "string" },
+          value: { type: "string" },
+        },
+        required: ["path", "value"],
+      },
+    },
+    problemas_activos_secundarios: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        properties: {
+          titulo: { type: "string" },
+          pertinentes_positivos: { type: "string" },
+          pertinentes_negativos: { type: "string" },
+        },
+        required: ["titulo", "pertinentes_positivos", "pertinentes_negativos"],
+      },
+    },
+  },
+  required: ["campos", "problemas_activos_secundarios"],
+} as const
+
+const historiaClinicaExtractionSchema = z.object({
+  campos: z
+    .array(
+      z.object({
+        path: z.string().trim().min(1).max(240),
+        value: z.string().trim().min(1).max(12_000),
+      })
+    )
+    .max(historiaClinicaLeafKeys.length),
+  problemas_activos_secundarios: z
+    .array(
+      z.object({
+        titulo: z.string().trim().min(1).max(500),
+        pertinentes_positivos: z.string().trim().max(4_000),
+        pertinentes_negativos: z.string().trim().max(4_000),
+      })
+    )
+    .max(40),
+})
+
+const historiaClinicaLeafKeySet = new Set(historiaClinicaLeafKeys)
 
 export function parseHistoriaClinicaDraft(outputText: string) {
   const parsed = parseGeminiJsonObject(outputText)
+  assertHistoriaClinicaShape(parsed)
 
+  return normalizeHistoriaClinicaDraft(parsed)
+}
+
+export function createHistoriaClinicaDraftFromExtraction(outputText: string) {
+  const extraction = historiaClinicaExtractionSchema.parse(
+    parseGeminiJsonObject(outputText)
+  )
+  const source: Record<string, unknown> = {}
+
+  for (const field of extraction.campos) {
+    if (!historiaClinicaLeafKeySet.has(field.path)) continue
+    if (field.path === "plan_manejo.d1" || field.path === "plan_manejo.m1") {
+      continue
+    }
+
+    assignHistoriaClinicaPath(source, field.path, field.value)
+  }
+
+  assignHistoriaClinicaPath(
+    source,
+    "impresion_diagnostica.problemas_activos_secundarios",
+    extraction.problemas_activos_secundarios
+  )
+
+  return normalizeHistoriaClinicaDraft(source)
+}
+
+function normalizeHistoriaClinicaDraft(value: unknown) {
   const completed = completeJsonSchemaValue(
-    parsed,
+    value,
     historiaClinicaJsonSchema as JsonSchemaNode,
     historiaClinicaJsonSchema as JsonSchemaNode
   )
@@ -70,6 +152,52 @@ export function parseHistoriaClinicaDraft(outputText: string) {
       },
     })
   )
+}
+
+function assignHistoriaClinicaPath(
+  target: Record<string, unknown>,
+  path: string,
+  value: unknown
+) {
+  const parts = path.split(".")
+  let current = target
+
+  for (const part of parts.slice(0, -1)) {
+    const existing = current[part]
+    if (isRecord(existing)) {
+      current = existing
+      continue
+    }
+
+    const child: Record<string, unknown> = {}
+    current[part] = child
+    current = child
+  }
+
+  current[parts.at(-1)!] = value
+}
+
+function assertHistoriaClinicaShape(value: unknown) {
+  const expectedTopLevelKeys = [
+    "antecedentes",
+    "datos_personales",
+    "enfermedad_actual",
+    "examen_fisico",
+    "fecha_atencion",
+    "impresion_diagnostica",
+    "motivo_consulta",
+    "plan_manejo",
+    "ras",
+  ]
+
+  if (
+    !isRecord(value) ||
+    !expectedTopLevelKeys.some((key) => Object.hasOwn(value, key))
+  ) {
+    throw new Error(
+      "Gemini returned clinical JSON that does not match the report schema."
+    )
+  }
 }
 
 export function summarizeHistoriaClinicaDraft(draft: HistoriaClinicaDraft) {
@@ -254,36 +382,6 @@ function firstUsableText(value: string | null) {
       ?.slice(0, 220)
       .trim() || null
   )
-}
-
-function stripUnsupportedSchemaFields(node: JsonSchemaNode): JsonSchemaNode {
-  const result: JsonSchemaNode = {}
-
-  for (const [key, value] of Object.entries(node)) {
-    if (key === "$schema" || key === "$id" || key === "default") continue
-
-    if (Array.isArray(value)) {
-      result[key] = value.map((entry) =>
-        isRecord(entry)
-          ? stripUnsupportedSchemaFields(entry as JsonSchemaNode)
-          : entry
-      )
-      continue
-    }
-
-    result[key] = isRecord(value)
-      ? Object.fromEntries(
-          Object.entries(value).map(([childKey, childValue]) => [
-            childKey,
-            isRecord(childValue)
-              ? stripUnsupportedSchemaFields(childValue as JsonSchemaNode)
-              : childValue,
-          ])
-        )
-      : value
-  }
-
-  return result
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
