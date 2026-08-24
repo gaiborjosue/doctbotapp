@@ -1,0 +1,26 @@
+diff --git a/dist/avatarDefinition.schema.json b/dist/avatarDefinition.schema.json
+index 018a161a332ba6bbaa08089be455a16add360a9d..b14d50b227eb7aa38f43a2d7dfea5699890b1e93 100644
+--- a/dist/avatarDefinition.schema.json
++++ b/dist/avatarDefinition.schema.json
+@@ -59,7 +59,7 @@
+     "hexColor": { "type": "string", "pattern": "^#[0-9a-f]{6}$" },
+     "boundedNumber": { "type": "number", "minimum": -10000, "maximum": 10000 },
+     "dimension": { "type": "number", "minimum": 0.001, "maximum": 10000 },
+-    "roundness": { "type": "number", "minimum": 0, "maximum": 1 },
++    "roundness": { "type": "number", "minimum": 0, "maximum": 2 },
+     "surface": {
+       "type": "object",
+       "additionalProperties": false,
+diff --git a/dist/index.js b/dist/index.js
+index 6e768dc3582dcc58b37316b892cabf1ff65ac282..f348e09d17a65f22f2f499db68ae8f5cf3a151b0 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -84,7 +84,7 @@ var k = {
+ 		roundness: {
+ 			type: "number",
+ 			minimum: 0,
+-			maximum: 1
++			maximum: 2
+ 		},
+ 		surface: {
+ 			type: "object",

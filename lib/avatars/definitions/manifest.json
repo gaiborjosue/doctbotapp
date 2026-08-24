@@ -1,0 +1,114 @@
+{
+  "schema": "docbot/avatar-definition-manifest",
+  "schemaVersion": 1,
+  "behaviorTemplate": "Grok bot",
+  "expressionKeys": [
+    "neutral",
+    "upward-side-glance",
+    "downward-gaze",
+    "skeptical-right",
+    "small-attentive",
+    "wide-downward-gaze",
+    "surprised-left",
+    "sleepy-squint",
+    "angry-right",
+    "curious-left",
+    "asymmetric-down-right",
+    "attentive-left",
+    "joyful-wide",
+    "eyes-closed",
+    "joyful-down-right",
+    "skeptical-left",
+    "far-right-glance",
+    "angry-left",
+    "playful-right",
+    "asymmetric-up-left",
+    "gentle-downward-gaze",
+    "wide-down-left",
+    "surprised-wide-left",
+    "drowsy-closed",
+    "suspicious-right",
+    "shy-downward",
+    "angry-brows",
+    "uneasy-left",
+    "recording"
+  ],
+  "animationKeys": [
+    "sleeping",
+    "waking",
+    "idle",
+    "listening",
+    "thinking",
+    "searching",
+    "working",
+    "excited",
+    "bored",
+    "suspicious",
+    "angry",
+    "angry-brows-shake",
+    "drowsy",
+    "happy",
+    "curious",
+    "confused",
+    "surprised",
+    "proud",
+    "shy",
+    "sad",
+    "laughing",
+    "scared",
+    "playful",
+    "celebrate"
+  ],
+  "avatars": [
+    {
+      "id": "strobi",
+      "name": "Strobi",
+      "file": "strobi.avatar.json"
+    },
+    {
+      "id": "avatar-4fe2d1bd-cf46-4e5e-a62d-d6b60be519ed",
+      "name": "Freddy",
+      "file": "freddy.avatar.json"
+    },
+    {
+      "id": "avatar-295e74a7-5d70-4d61-83d4-7beebb22bdd8",
+      "name": "Citrus",
+      "file": "citrus.avatar.json"
+    },
+    {
+      "id": "avatar-1786600724626",
+      "name": "Nova",
+      "file": "nova.avatar.json"
+    },
+    {
+      "id": "avatar-7874f78a-93ec-4536-a3b6-bb53ed744efd",
+      "name": "Grok bot",
+      "file": "grok-bot.avatar.json"
+    },
+    {
+      "id": "avatar-1b2ee9c6-a6c5-4054-87e7-fec24f285269",
+      "name": "Sunee",
+      "file": "sunee.avatar.json"
+    },
+    {
+      "id": "avatar-b6362e59-81a3-4334-a399-a721b23cf553",
+      "name": "Kirby",
+      "file": "kirby.avatar.json"
+    },
+    {
+      "id": "avatar-fafdaf4d-2071-41d6-9d42-7d34670956f0",
+      "name": "Cloudee",
+      "file": "cloudee.avatar.json"
+    },
+    {
+      "id": "avatar-2739f2c2-a5b4-45d9-8915-c9d6101d4d3b",
+      "name": "Cubee",
+      "file": "cubee.avatar.json"
+    },
+    {
+      "id": "avatar-4b9ea0c1-286f-4aa1-b053-61fcc416ba7e",
+      "name": "Onee",
+      "file": "onee.avatar.json"
+    }
+  ]
+}

@@ -1,19 +1,73 @@
-import { Button } from "@/components/ui/button"
+import { redirect } from "next/navigation"
 
-export default function Page() {
+import { DocBotProfileProvider } from "@/components/docbot-profile-provider"
+import { RecordingScreen } from "@/components/recording-screen"
+import { normalizeDocBotProfile } from "@/lib/docbot-profile"
+import { getDocBotSessionSummaries } from "@/lib/sessions/server"
+import { createClient } from "@/lib/supabase/server"
+
+export const dynamic = "force-dynamic"
+
+export default async function Page() {
+  const supabase = await createClient()
+  const { data, error } = await supabase.auth.getClaims()
+  const claims = data?.claims
+
+  if (error || !claims) redirect("/login")
+
+  const email = typeof claims.email === "string" ? claims.email : ""
+  const metadata = claims.user_metadata
+  const metadataName =
+    metadata && typeof metadata === "object" && "full_name" in metadata
+      ? metadata.full_name
+      : undefined
+  const name =
+    typeof metadataName === "string" && metadataName.trim()
+      ? metadataName.trim()
+      : email.split("@")[0] || "DocBot user"
+
+  const [profileResult, initialSessions] = await Promise.all([
+    supabase
+      .from("docbot_profiles")
+      .select("username, avatar_id, avatar_colors")
+      .eq("user_id", claims.sub)
+      .maybeSingle(),
+    getDocBotSessionSummaries(supabase, claims.sub),
+  ])
+  const { data: profileRow, error: profileError } = profileResult
+
+  if (profileError) {
+    throw new Error("Unable to load the DocBot profile.", {
+      cause: profileError,
+    })
+  }
+
+  const initialProfile = normalizeDocBotProfile(
+    profileRow
+      ? {
+          avatarId: profileRow.avatar_id,
+          avatarColors: profileRow.avatar_colors,
+          username: profileRow.username,
+        }
+      : undefined,
+    name
+  )
+
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
-    </div>
+    <DocBotProfileProvider
+      key={claims.sub}
+      userId={claims.sub}
+      initialProfile={initialProfile}
+      hasRemoteProfile={Boolean(profileRow)}
+    >
+      <RecordingScreen
+        initialSessions={initialSessions}
+        user={{
+          id: claims.sub,
+          email,
+          name: initialProfile.username || name,
+        }}
+      />
+    </DocBotProfileProvider>
   )
 }

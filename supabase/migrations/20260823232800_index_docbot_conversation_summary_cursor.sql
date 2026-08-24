@@ -1,0 +1,3 @@
+create index if not exists docbot_sessions_conversation_summary_cursor_idx
+on public.docbot_sessions (conversation_summary_through_message_id)
+where conversation_summary_through_message_id is not null;

@@ -1,6 +1,9 @@
 packages: []
 
 allowBuilds:
+  msw: false
   sharp: true
   unrs-resolver: true
-  msw: false
+
+patchedDependencies:
+  "@bible-strong/avatar-core@0.1.0": patches/@bible-strong__avatar-core@0.1.0.patch

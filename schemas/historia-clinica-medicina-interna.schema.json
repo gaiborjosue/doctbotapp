@@ -1,0 +1,1212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://medpartner.local/schemas/historia-clinica-medicina-interna.schema.json",
+  "title": "Historia Clinica Medicina Interna",
+  "description": "Schema alineado a los placeholders del documento 'Historia_clinica_medicina_interna_template_editable'. Cada campo debe devolverse como texto o null para mantener un llenado deterministic del template.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "datos_personales",
+    "motivo_consulta",
+    "enfermedad_actual",
+    "antecedentes",
+    "ras",
+    "examen_fisico",
+    "plan_manejo",
+    "fecha_atencion",
+    "impresion_diagnostica"
+  ],
+  "$defs": {
+    "nullableString": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
+    }
+  },
+  "properties": {
+    "datos_personales": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "nombre",
+        "edad",
+        "genero",
+        "identidad_de_genero",
+        "lugar_de_nacimiento",
+        "lugar_de_residencia",
+        "ocupacion",
+        "grado_de_instruccion",
+        "estado_civil",
+        "raza_etnia",
+        "religion",
+        "numero_de_contacto",
+        "grupo_factor_sanguineo",
+        "lateralidad",
+        "representante",
+        "numero_historia_clinica_cedula",
+        "servicio_unidad"
+      ],
+      "properties": {
+        "nombre": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "edad": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "genero": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "identidad_de_genero": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "lugar_de_nacimiento": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "lugar_de_residencia": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "ocupacion": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "grado_de_instruccion": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "estado_civil": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "raza_etnia": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "religion": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "numero_de_contacto": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "grupo_factor_sanguineo": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "lateralidad": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "representante": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "numero_historia_clinica_cedula": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "servicio_unidad": {
+          "$ref": "#/$defs/nullableString"
+        }
+      }
+    },
+    "motivo_consulta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "texto"
+      ],
+      "properties": {
+        "texto": {
+          "$ref": "#/$defs/nullableString"
+        }
+      }
+    },
+    "enfermedad_actual": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "texto"
+      ],
+      "properties": {
+        "texto": {
+          "$ref": "#/$defs/nullableString"
+        }
+      }
+    },
+    "antecedentes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "personales",
+        "familiares"
+      ],
+      "properties": {
+        "personales": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "inmunizaciones_nino",
+            "enfermedades_infectocontagiosas",
+            "patologicos",
+            "ginecobstetricos",
+            "sexuales",
+            "habitos",
+            "farmacos",
+            "mantenimiento_salud",
+            "biomasa",
+            "vivienda"
+          ],
+          "properties": {
+            "inmunizaciones_nino": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "enfermedades_infectocontagiosas": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "patologicos": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "clinicos",
+                "psiquiatricos",
+                "cirugias",
+                "traumatologicos",
+                "hospitalizaciones",
+                "alergias"
+              ],
+              "properties": {
+                "clinicos": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "psiquiatricos": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "cirugias": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "traumatologicos": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "hospitalizaciones": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "alergias": {
+                  "$ref": "#/$defs/nullableString"
+                }
+              }
+            },
+            "ginecobstetricos": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "menarquia",
+                "fum",
+                "caracteristicas_menstruacion",
+                "embarazos",
+                "partos",
+                "cesareas",
+                "abortos",
+                "hijos_vivos",
+                "hijos_muertos"
+              ],
+              "properties": {
+                "menarquia": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "fum": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "caracteristicas_menstruacion": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "embarazos": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "partos": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "cesareas": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "abortos": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "hijos_vivos": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "hijos_muertos": {
+                  "$ref": "#/$defs/nullableString"
+                }
+              }
+            },
+            "sexuales": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "vida_sexual",
+                "numero_parejas",
+                "preferencia",
+                "metodos_barrera",
+                "ets"
+              ],
+              "properties": {
+                "vida_sexual": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "numero_parejas": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "preferencia": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "metodos_barrera": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "ets": {
+                  "$ref": "#/$defs/nullableString"
+                }
+              }
+            },
+            "habitos": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "miccional",
+                "defecatorio",
+                "alimentacion",
+                "actividad_fisica",
+                "pasatiempo",
+                "sueno",
+                "tabaco",
+                "alcohol",
+                "cafeina",
+                "drogas_ilicitas",
+                "toxicos"
+              ],
+              "properties": {
+                "miccional": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "defecatorio": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "alimentacion": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "actividad_fisica": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "pasatiempo": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "sueno": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "tabaco": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "alcohol": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "cafeina": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "drogas_ilicitas": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "toxicos": {
+                  "$ref": "#/$defs/nullableString"
+                }
+              }
+            },
+            "farmacos": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "medicacion_habitual",
+                "suplementos"
+              ],
+              "properties": {
+                "medicacion_habitual": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "suplementos": {
+                  "$ref": "#/$defs/nullableString"
+                }
+              }
+            },
+            "mantenimiento_salud": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "inmunizaciones_adulto",
+                "tamizaje_prostata",
+                "otros_examenes"
+              ],
+              "properties": {
+                "inmunizaciones_adulto": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "tamizaje_prostata": {
+                  "$ref": "#/$defs/nullableString"
+                },
+                "otros_examenes": {
+                  "$ref": "#/$defs/nullableString"
+                }
+              }
+            },
+            "biomasa": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "vivienda": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "familiares": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "madre",
+            "padre",
+            "hermanos",
+            "otros"
+          ],
+          "properties": {
+            "madre": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "padre": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "hermanos": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "otros": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        }
+      }
+    },
+    "ras": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "estado_general",
+        "piel",
+        "vision",
+        "auditivo",
+        "olfato",
+        "boca_garganta",
+        "cabeza_cuello",
+        "torax_respiratorio",
+        "cardiovascular",
+        "gastrointestinal",
+        "urinario",
+        "genital_masculino",
+        "genital_femenino",
+        "neurologico",
+        "musculo_esqueletico",
+        "salud_mental",
+        "otros"
+      ],
+      "properties": {
+        "estado_general": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "perdida_peso",
+            "fiebre",
+            "fatiga",
+            "resumen"
+          ],
+          "properties": {
+            "perdida_peso": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "fiebre": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "fatiga": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "resumen": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "piel": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "lesiones",
+            "perdida_cabello",
+            "resumen"
+          ],
+          "properties": {
+            "lesiones": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "perdida_cabello": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "resumen": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "vision": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "perdida_agudeza",
+            "dolor",
+            "secrecion",
+            "vision_doble",
+            "cambios_coloracion"
+          ],
+          "properties": {
+            "perdida_agudeza": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "dolor": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "secrecion": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "vision_doble": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "cambios_coloracion": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "auditivo": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "perdida_agudeza",
+            "tinitus",
+            "dolor",
+            "secrecion",
+            "vertigo"
+          ],
+          "properties": {
+            "perdida_agudeza": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "tinitus": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "dolor": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "secrecion": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "vertigo": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "olfato": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "perdida_olfato",
+            "obstruccion",
+            "dolor",
+            "secrecion",
+            "epistaxis"
+          ],
+          "properties": {
+            "perdida_olfato": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "obstruccion": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "dolor": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "secrecion": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "epistaxis": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "boca_garganta": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dolor_encias",
+            "dolor_dientes",
+            "cambios_voz",
+            "lesiones_lengua",
+            "dolor_garganta"
+          ],
+          "properties": {
+            "dolor_encias": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "dolor_dientes": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "cambios_voz": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "lesiones_lengua": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "dolor_garganta": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "cabeza_cuello": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dolor",
+            "cefaleas",
+            "limitacion_movimiento",
+            "masas"
+          ],
+          "properties": {
+            "dolor": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "cefaleas": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "limitacion_movimiento": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "masas": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "torax_respiratorio": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "disnea",
+            "dolor",
+            "tos",
+            "resumen"
+          ],
+          "properties": {
+            "disnea": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "dolor": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "tos": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "resumen": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "cardiovascular": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dolor_pecho",
+            "palpitaciones",
+            "resumen"
+          ],
+          "properties": {
+            "dolor_pecho": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "palpitaciones": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "resumen": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "gastrointestinal": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dolor",
+            "nauseas_vomitos",
+            "distension",
+            "diarrea_estrenimiento",
+            "resumen"
+          ],
+          "properties": {
+            "dolor": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "nauseas_vomitos": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "distension": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "diarrea_estrenimiento": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "resumen": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "urinario": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "disuria",
+            "micciones_nocturnas",
+            "incontinencia",
+            "disminucion_fuerza",
+            "resumen"
+          ],
+          "properties": {
+            "disuria": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "micciones_nocturnas": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "incontinencia": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "disminucion_fuerza": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "resumen": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "genital_masculino": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dolor",
+            "secrecion",
+            "masas_testiculares",
+            "ets"
+          ],
+          "properties": {
+            "dolor": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "secrecion": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "masas_testiculares": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "ets": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "genital_femenino": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dolor",
+            "secrecion",
+            "ets",
+            "mamas"
+          ],
+          "properties": {
+            "dolor": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "secrecion": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "ets": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "mamas": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "neurologico": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "debilidad",
+            "parestesias",
+            "entumecimiento",
+            "perdida_conciencia",
+            "problems_equilibrio",
+            "resumen"
+          ],
+          "properties": {
+            "debilidad": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "parestesias": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "entumecimiento": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "perdida_conciencia": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "problems_equilibrio": {
+              "$ref": "#/$defs/nullableString",
+              "description": "Se conserva este nombre porque coincide con el placeholder actual del template."
+            },
+            "resumen": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "musculo_esqueletico": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dolor_inflamacion",
+            "resumen"
+          ],
+          "properties": {
+            "dolor_inflamacion": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "resumen": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "salud_mental": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "tristeza_depresion",
+            "ansiedad",
+            "cambios_animo",
+            "ideas_suicidio",
+            "perdida_memoria",
+            "alucinaciones"
+          ],
+          "properties": {
+            "tristeza_depresion": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "ansiedad": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "cambios_animo": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "ideas_suicidio": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "perdida_memoria": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "alucinaciones": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "otros": {
+          "$ref": "#/$defs/nullableString"
+        }
+      }
+    },
+    "examen_fisico": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "signos_vitales",
+        "antropometricos",
+        "estado_general",
+        "piel",
+        "cabeza",
+        "cuello",
+        "torax_respiratorio",
+        "cardiovascular",
+        "abdomen",
+        "genitales",
+        "extremidades",
+        "neurologico",
+        "musculo_esqueletico",
+        "cabeza_cuello",
+        "ojos",
+        "boca",
+        "genitourinario"
+      ],
+      "properties": {
+        "signos_vitales": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "fc",
+            "fr",
+            "ta",
+            "saturacion_o2",
+            "temperatura",
+            "resumen"
+          ],
+          "properties": {
+            "fc": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "fr": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "ta": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "saturacion_o2": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "temperatura": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "resumen": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "antropometricos": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "talla",
+            "peso",
+            "imc",
+            "perimetro_abdominal"
+          ],
+          "properties": {
+            "talla": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "peso": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "imc": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "perimetro_abdominal": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "estado_general": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "salud_aparente",
+            "nivel_conciencia",
+            "glasgow",
+            "postura",
+            "marcha",
+            "biotipo",
+            "facie",
+            "resumen"
+          ],
+          "properties": {
+            "salud_aparente": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "nivel_conciencia": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "glasgow": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "postura": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "marcha": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "biotipo": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "facie": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "resumen": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "piel": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "hallazgos"
+          ],
+          "properties": {
+            "hallazgos": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "cabeza": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "hallazgos"
+          ],
+          "properties": {
+            "hallazgos": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "cuello": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "hallazgos"
+          ],
+          "properties": {
+            "hallazgos": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "torax_respiratorio": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "hallazgos"
+          ],
+          "properties": {
+            "hallazgos": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "cardiovascular": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "hallazgos"
+          ],
+          "properties": {
+            "hallazgos": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "abdomen": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "hallazgos"
+          ],
+          "properties": {
+            "hallazgos": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "genitales": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "hallazgos"
+          ],
+          "properties": {
+            "hallazgos": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "extremidades": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "hallazgos"
+          ],
+          "properties": {
+            "hallazgos": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "neurologico": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "hallazgos"
+          ],
+          "properties": {
+            "hallazgos": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "musculo_esqueletico": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "hallazgos"
+          ],
+          "properties": {
+            "hallazgos": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "cabeza_cuello": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "hallazgos"
+          ],
+          "properties": {
+            "hallazgos": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "ojos": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "hallazgos"
+          ],
+          "properties": {
+            "hallazgos": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "boca": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "hallazgos"
+          ],
+          "properties": {
+            "hallazgos": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        },
+        "genitourinario": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "hallazgos"
+          ],
+          "properties": {
+            "hallazgos": {
+              "$ref": "#/$defs/nullableString"
+            }
+          }
+        }
+      }
+    },
+    "plan_manejo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "a1",
+        "d1",
+        "c1",
+        "a2",
+        "v1",
+        "a3",
+        "n1",
+        "d2",
+        "i1",
+        "m1",
+        "e1",
+        "l1",
+        "c2"
+      ],
+      "properties": {
+        "a1": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "d1": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "c1": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "a2": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "v1": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "a3": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "n1": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "d2": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "i1": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "m1": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "e1": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "l1": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "c2": {
+          "$ref": "#/$defs/nullableString"
+        }
+      }
+    },
+    "fecha_atencion": {
+      "$ref": "#/$defs/nullableString"
+    },
+    "impresion_diagnostica": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "problema_principal",
+        "problemas_activos_secundarios"
+      ],
+      "properties": {
+        "problema_principal": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "problemas_activos_secundarios": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "titulo",
+              "pertinentes_positivos",
+              "pertinentes_negativos"
+            ],
+            "properties": {
+              "titulo": {
+                "$ref": "#/$defs/nullableString"
+              },
+              "pertinentes_positivos": {
+                "$ref": "#/$defs/nullableString"
+              },
+              "pertinentes_negativos": {
+                "$ref": "#/$defs/nullableString"
+              }
+            }
+          },
+          "default": []
+        }
+      }
+    }
+  }
+}
