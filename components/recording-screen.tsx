@@ -108,7 +108,6 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { ShimmeringText } from "@/components/ui/shimmering-text"
 import { TimerDisplay, TimerIcon, TimerRoot } from "@/components/ui/timer"
 import { LiveWaveform } from "@/components/ui/live-waveform"
-import { ScrollingWaveform } from "@/components/ui/waveform"
 import {
   createCustomizedDefinition,
   getAvatarColors,
@@ -2941,15 +2940,20 @@ export function RecordingScreen({
                       className="pointer-events-none absolute top-1/2 left-1/2 z-0 w-screen -translate-x-1/2 -translate-y-1/2 overflow-hidden opacity-20"
                       aria-hidden="true"
                     >
-                      <ScrollingWaveform
-                        height="clamp(210px, 36vh, 345px)"
-                        barWidth={3}
-                        barGap={5}
-                        barRadius={2}
-                        barCount={320}
-                        speed={42}
-                        fadeEdges={false}
+                      <LiveWaveform
                         active={!isPaused}
+                        height="clamp(210px, 36vh, 345px)"
+                        barGap={5}
+                        barHeight={3}
+                        barRadius={2}
+                        barWidth={3}
+                        fadeEdges={false}
+                        historySize={320}
+                        mode="scrolling"
+                        sensitivity={2.25}
+                        smoothingTimeConstant={0.72}
+                        stream={liveRecordingControllerRef.current?.stream}
+                        updateRate={60}
                       />
                     </div>
                   )}

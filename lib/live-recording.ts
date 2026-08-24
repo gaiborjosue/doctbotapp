@@ -46,6 +46,7 @@ export type LiveRecordingController = {
   pause: () => Promise<void>
   resume: () => Promise<void>
   stop: () => Promise<LiveRecordingAsset>
+  stream: MediaStream
 }
 
 export async function startLiveRecording({
@@ -218,6 +219,7 @@ export async function startLiveRecording({
     pause: () => changeStatus("paused"),
     resume: () => changeStatus("recording"),
     stop,
+    stream,
   }
 }
 

@@ -4,15 +4,21 @@ import {
   ArchiveIcon,
   ArchiveRestoreIcon,
   ArrowLeftIcon,
+  ChevronRightIcon,
   MessageSquareTextIcon,
   MoreHorizontalIcon,
   PencilIcon,
   Trash2Icon,
 } from "lucide-react"
-import { type FormEvent, useState } from "react"
+import { type FormEvent, useMemo, useState } from "react"
 
 import { ProfileDropdown } from "@/components/profile-dropdown"
 import { Button } from "@/components/ui/button"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,7 +38,6 @@ import {
   SidebarHeader,
   SidebarMenu,
   SidebarMenuAction,
-  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
@@ -41,6 +46,7 @@ import {
 } from "@/components/ui/sidebar"
 import type { DocBotSessionSummary } from "@/lib/sessions/types"
 import type { AuthenticatedUser } from "@/lib/supabase/types"
+import { cn } from "@/lib/utils"
 
 export function ChatHistorySidebar({
   archivedSessions,
@@ -98,6 +104,10 @@ export function ChatHistorySidebar({
   }
 
   const visibleSessions = isShowingArchived ? archivedSessions : sessions
+  const sessionDateGroups = useMemo(
+    () => groupSessionsByDate(visibleSessions),
+    [visibleSessions]
+  )
 
   return (
     <Sidebar collapsible="offcanvas" side="left">
@@ -152,14 +162,13 @@ export function ChatHistorySidebar({
                 {archivedSessionsError}
               </p>
             ) : visibleSessions.length > 0 ? (
-              <SidebarMenu>
-                {visibleSessions.map((session) => (
-                  <ChatHistorySessionRow
+              <div className="flex flex-col gap-1">
+                {sessionDateGroups.map((group, index) => (
+                  <ChatHistoryDateGroup
+                    defaultOpen={index === 0}
+                    group={group}
                     isArchived={isShowingArchived}
-                    isSelected={
-                      !isShowingArchived && selectedSessionId === session.id
-                    }
-                    key={session.id}
+                    key={`${isShowingArchived ? "archived" : "recent"}:${group.dateKey}`}
                     onArchive={onArchiveSession}
                     onDelete={onDeleteSession}
                     onRename={onRenameSession}
@@ -171,10 +180,12 @@ export function ChatHistorySidebar({
                           }
                         : selectSession
                     }
-                    session={session}
+                    selectedSessionId={
+                      isShowingArchived ? undefined : selectedSessionId
+                    }
                   />
                 ))}
-              </SidebarMenu>
+              </div>
             ) : (
               <p className="px-2 py-3 text-xs text-sidebar-foreground/55">
                 {isShowingArchived
@@ -199,6 +210,72 @@ export function ChatHistorySidebar({
 
       <SidebarRail />
     </Sidebar>
+  )
+}
+
+type SessionDateGroup = {
+  dateKey: string
+  label: string
+  sessions: DocBotSessionSummary[]
+}
+
+function ChatHistoryDateGroup({
+  defaultOpen,
+  group,
+  isArchived,
+  onArchive,
+  onDelete,
+  onRename,
+  onRestore,
+  onSelect,
+  selectedSessionId,
+}: {
+  defaultOpen: boolean
+  group: SessionDateGroup
+  isArchived: boolean
+  onArchive: (sessionId: string) => Promise<void>
+  onDelete: (sessionId: string) => Promise<void>
+  onRename: (sessionId: string, title: string) => Promise<void>
+  onRestore: (sessionId: string) => Promise<void>
+  onSelect: (sessionId: string) => void
+  selectedSessionId?: string
+}) {
+  const [isOpen, setIsOpen] = useState(defaultOpen)
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <CollapsibleTrigger
+        aria-label={`${isOpen ? "Collapse" : "Expand"} sessions from ${group.label}`}
+        className="group/date flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-[0.6875rem] font-medium text-sidebar-foreground/55 transition-colors outline-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+      >
+        <ChevronRightIcon
+          aria-hidden="true"
+          className={cn("size-3 transition-transform", isOpen && "rotate-90")}
+        />
+        <span>{group.label}</span>
+        <span
+          aria-hidden="true"
+          className="h-px min-w-3 flex-1 bg-sidebar-border"
+        />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="pt-0.5">
+        <SidebarMenu>
+          {group.sessions.map((session) => (
+            <ChatHistorySessionRow
+              isArchived={isArchived}
+              isSelected={selectedSessionId === session.id}
+              key={session.id}
+              onArchive={onArchive}
+              onDelete={onDelete}
+              onRename={onRename}
+              onRestore={onRestore}
+              onSelect={onSelect}
+              session={session}
+            />
+          ))}
+        </SidebarMenu>
+      </CollapsibleContent>
+    </Collapsible>
   )
 }
 
@@ -364,7 +441,7 @@ function ChatHistorySessionRow({
     <SidebarMenuItem>
       <SidebarMenuButton
         aria-label={`Open ${session.title}`}
-        className="pr-24"
+        className="pr-8"
         isActive={isSelected}
         onClick={() => onSelect(session.id)}
         type="button"
@@ -372,10 +449,6 @@ function ChatHistorySessionRow({
         <MessageSquareTextIcon aria-hidden="true" />
         <span>{session.title}</span>
       </SidebarMenuButton>
-
-      <SidebarMenuBadge className="right-7">
-        {formatSessionDate(session.lastActivityAt)}
-      </SidebarMenuBadge>
 
       <DropdownMenu>
         <DropdownMenuTrigger
@@ -481,10 +554,35 @@ function ChatHistorySessionRow({
   )
 }
 
-function formatSessionDate(value: string) {
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return ""
+function groupSessionsByDate(sessions: DocBotSessionSummary[]) {
+  const groups: SessionDateGroup[] = []
+  const groupsByDate = new Map<string, SessionDateGroup>()
 
+  for (const session of sessions) {
+    const date = new Date(session.lastActivityAt)
+    const isValidDate = !Number.isNaN(date.getTime())
+    const dateKey = isValidDate
+      ? `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}`
+      : "unknown"
+    let group = groupsByDate.get(dateKey)
+
+    if (!group) {
+      group = {
+        dateKey,
+        label: isValidDate ? formatSessionDate(date) : "Unknown date",
+        sessions: [],
+      }
+      groupsByDate.set(dateKey, group)
+      groups.push(group)
+    }
+
+    group.sessions.push(session)
+  }
+
+  return groups
+}
+
+function formatSessionDate(date: Date) {
   return new Intl.DateTimeFormat("en-US", {
     day: "numeric",
     month: "short",
