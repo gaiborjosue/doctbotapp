@@ -20,12 +20,12 @@ export type AudioProcessingJob = {
 
 export async function startUploadedAudioProcessing(
   uploadId: string,
-  { force = false }: { force?: boolean } = {}
+  { force = false, tags = [] }: { force?: boolean; tags?: string[] } = {}
 ) {
   return await requestProcessingJob("/api/processing/audio", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ force, uploadId }),
+    body: JSON.stringify({ force, tags, uploadId }),
   })
 }
 

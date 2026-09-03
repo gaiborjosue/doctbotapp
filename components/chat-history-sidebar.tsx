@@ -57,6 +57,7 @@ export function ChatHistorySidebar({
   onArchiveSession,
   onDeleteSession,
   onGoHome,
+  onOpenTemplates,
   onRenameSession,
   onRestoreSession,
   onSelectSession,
@@ -74,6 +75,7 @@ export function ChatHistorySidebar({
   onArchiveSession: (sessionId: string) => Promise<void>
   onDeleteSession: (sessionId: string) => Promise<void>
   onGoHome: () => void
+  onOpenTemplates: () => void
   onRenameSession: (sessionId: string, title: string) => Promise<void>
   onRestoreSession: (
     sessionId: string,
@@ -100,6 +102,11 @@ export function ChatHistorySidebar({
 
   function goHome() {
     onGoHome()
+    if (isMobile) setOpenMobile(false)
+  }
+
+  function openTemplates() {
+    onOpenTemplates()
     if (isMobile) setOpenMobile(false)
   }
 
@@ -201,6 +208,7 @@ export function ChatHistorySidebar({
         <ProfileDropdown
           isShowingArchived={isShowingArchived}
           onBeforeLeave={onBeforeLeave}
+          onOpenTemplates={openTemplates}
           onToggleArchivedChats={
             isShowingArchived ? onShowRecentSessions : onShowArchivedSessions
           }
@@ -447,7 +455,14 @@ function ChatHistorySessionRow({
         type="button"
       >
         <MessageSquareTextIcon aria-hidden="true" />
-        <span>{session.title}</span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate">{session.title}</span>
+          {(session.tags ?? []).length > 0 ? (
+            <span className="mt-0.5 block truncate text-[0.5625rem] text-sidebar-foreground/50">
+              {(session.tags ?? []).join(" · ")}
+            </span>
+          ) : null}
+        </span>
       </SidebarMenuButton>
 
       <DropdownMenu>

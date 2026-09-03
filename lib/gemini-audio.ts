@@ -38,6 +38,7 @@ export type GeminiAudioInteractionStatus =
   | "budget_exceeded"
 
 export type GeminiAudioInteractionResult = {
+  evidenceText: string | null
   errorMessage: string | null
   interactionId: string
   outputJson: HistoriaClinicaDraft | null
@@ -62,7 +63,7 @@ export async function createGeminiAudioSummaryInteraction({
 }: {
   audioUrl: string
   mimeType: string
-}) {
+}): Promise<GeminiAudioInteractionResult> {
   const interaction = await getGeminiClient().interactions.create(
     {
       model: GEMINI_AUDIO_MODEL_ID,
@@ -82,6 +83,7 @@ export async function createGeminiAudioSummaryInteraction({
   if (!isGeminiAudioInteractionTerminal(normalized.status)) {
     return {
       ...normalized,
+      evidenceText: null,
       errorMessage:
         "Gemini returned a non-terminal state for a stateless request.",
       outputJson: null,
@@ -92,6 +94,7 @@ export async function createGeminiAudioSummaryInteraction({
 
   if (normalized.status !== "completed" || !normalized.rawOutputText) {
     return {
+      evidenceText: null,
       errorMessage: normalized.errorMessage,
       interactionId: normalized.interactionId,
       outputJson: null,
@@ -104,6 +107,7 @@ export async function createGeminiAudioSummaryInteraction({
     const outputJson = await structureClinicalEvidence(normalized.rawOutputText)
 
     return {
+      evidenceText: normalized.rawOutputText,
       errorMessage: null,
       interactionId: normalized.interactionId,
       outputJson,
@@ -112,6 +116,7 @@ export async function createGeminiAudioSummaryInteraction({
     }
   } catch (error) {
     return {
+      evidenceText: null,
       errorMessage: getGeminiAudioErrorMessage(error),
       interactionId: normalized.interactionId,
       outputJson: null,

@@ -3,6 +3,7 @@
 import {
   ArchiveIcon,
   ChevronUpIcon,
+  FileTextIcon,
   HistoryIcon,
   LogOutIcon,
 } from "lucide-react"
@@ -36,11 +37,13 @@ function getInitials(name: string) {
 export function ProfileDropdown({
   isShowingArchived,
   onBeforeLeave,
+  onOpenTemplates,
   onToggleArchivedChats,
   user,
 }: {
   isShowingArchived: boolean
   onBeforeLeave?: () => Promise<void>
+  onOpenTemplates: () => void
   onToggleArchivedChats: () => void
   user: AuthenticatedUser
 }) {
@@ -101,6 +104,10 @@ export function ProfileDropdown({
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
+              <DropdownMenuItem onClick={onOpenTemplates}>
+                <FileTextIcon aria-hidden="true" />
+                Document templates
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={onToggleArchivedChats}>
                 {isShowingArchived ? (
                   <HistoryIcon aria-hidden="true" />

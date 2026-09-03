@@ -8,6 +8,7 @@ import { z } from "zod"
 import {
   docBotAgent,
   GEMINI_CHAT_MODEL_ID,
+  isDocBotChatModelConfigured,
   type DocBotUIMessage,
 } from "@/lib/agents/docbot-agent"
 import { isValidDocumentApprovalResponse } from "@/lib/chat/approval"
@@ -20,6 +21,11 @@ import {
   type DocBotContextSnapshot,
   type DocBotMessageMetadata,
 } from "@/lib/chat/context-types"
+import {
+  DEFAULT_DOCBOT_CHAT_MODEL_ID,
+  DOCBOT_CHAT_MODEL_IDS,
+  MERCURY_CHAT_MODEL_ID,
+} from "@/lib/chat/models"
 import {
   getDocBotSessionContext,
   getDocBotSessionMessages,
@@ -39,6 +45,7 @@ const textPartSchema = z.object({
 
 const chatRequestSchema = z.object({
   message: z.unknown(),
+  modelId: z.enum(DOCBOT_CHAT_MODEL_IDS).default(DEFAULT_DOCBOT_CHAT_MODEL_ID),
   sessionId: z.string().uuid(),
 })
 
@@ -77,7 +84,21 @@ export async function POST(request: Request) {
       )
     }
 
-    const { message: rawRequestMessage, sessionId } = parsedRequest.data
+    const {
+      message: rawRequestMessage,
+      modelId,
+      sessionId,
+    } = parsedRequest.data
+
+    if (!isDocBotChatModelConfigured(modelId)) {
+      return Response.json(
+        {
+          error:
+            "Mercury 2.5 is not configured. Add INCEPTION_API_KEY and restart the app.",
+        },
+        { status: 503 }
+      )
+    }
 
     const context = await getDocBotSessionContext(
       supabase,
@@ -180,6 +201,7 @@ export async function POST(request: Request) {
     }
 
     const preparedContext = await prepareDocBotContextWindow({
+      chatModelId: modelId,
       context,
       supabase,
     })
@@ -189,7 +211,10 @@ export async function POST(request: Request) {
     let maxStepInputTokens = 0
     let maxStepTotalTokens = 0
     let stepCount = 0
-    const publicModelId = `google/${GEMINI_CHAT_MODEL_ID}`
+    const providerModelId =
+      modelId === MERCURY_CHAT_MODEL_ID
+        ? "mercury-2.5"
+        : GEMINI_CHAT_MODEL_ID
 
     return await createAgentUIStreamResponse({
       agent: docBotAgent,
@@ -223,7 +248,7 @@ export async function POST(request: Request) {
         return {
           context: completedSnapshot,
           createdAt: new Date().toISOString(),
-          modelId: publicModelId,
+          modelId,
           usage: completedUsage,
         }
       },
@@ -237,7 +262,7 @@ export async function POST(request: Request) {
             context: completedSnapshot,
             createdAt:
               responseMessage.metadata?.createdAt ?? new Date().toISOString(),
-            modelId: publicModelId,
+            modelId,
             ...(completedUsage ? { usage: completedUsage } : {}),
           },
         }
@@ -255,7 +280,7 @@ export async function POST(request: Request) {
             await insertDocBotChatGenerationUsage({
               assistantMessageId: persistedMessage.id,
               context,
-              model: GEMINI_CHAT_MODEL_ID,
+              model: providerModelId,
               snapshot: completedSnapshot,
               stepCount,
               supabase,
@@ -270,8 +295,9 @@ export async function POST(request: Request) {
         }
       },
       onError: (error) => {
-        console.error("[api/chat] Gemini stream failed", {
+        console.error("[api/chat] model stream failed", {
           message: error instanceof Error ? error.message : String(error),
+          modelId,
           sessionId,
         })
 

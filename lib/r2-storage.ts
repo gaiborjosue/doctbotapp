@@ -89,6 +89,49 @@ export function createR2ReportObjectKey({
   ].join("/")
 }
 
+export function createR2TemplateSourceObjectKey({
+  fileName,
+  templateId,
+  userId,
+  versionId,
+}: {
+  fileName: string
+  templateId: string
+  userId: string
+  versionId: string
+}) {
+  return [
+    "users",
+    userId,
+    "templates",
+    templateId,
+    "versions",
+    versionId,
+    "source",
+    sanitizeFileName(fileName),
+  ].join("/")
+}
+
+export function createR2TemplateArtifactObjectKey({
+  templateId,
+  userId,
+  versionId,
+}: {
+  templateId: string
+  userId: string
+  versionId: string
+}) {
+  return [
+    "users",
+    userId,
+    "templates",
+    templateId,
+    "versions",
+    versionId,
+    "template.docx",
+  ].join("/")
+}
+
 export async function createR2PresignedPutUrl({
   contentType,
   objectKey,

@@ -1,20 +1,20 @@
 {
   "schema": "bible-strong/avatar-definition",
   "schemaVersion": 1,
-  "name": "Grok bot",
+  "name": "DocBot",
   "body": {
     "primary": {
-      "type": "sphere",
-      "width": 240,
-      "height": 240,
-      "depth": 240,
+      "type": "capsule",
+      "width": 205,
+      "height": 243.15999755859372,
+      "depth": 205,
       "roundness": 1
     },
     "nodes": []
   },
   "colors": {
-    "body": "#000000",
-    "eyes": "#ffffff"
+    "body": "#040000",
+    "eyes": "#f7fbf7"
   },
   "expressions": {
     "neutral": {
@@ -25,20 +25,20 @@
       },
       "eyes": {
         "left": {
-          "width": 20,
-          "height": 50,
+          "width": 32.326931684892635,
+          "height": 65.6199951171875,
           "x": 0,
           "y": -7,
           "angle": 0
         },
         "right": {
-          "width": 20,
-          "height": 50,
+          "width": 32.326931684892635,
+          "height": 65.6199951171875,
           "x": 0,
           "y": -7,
           "angle": 0
         },
-        "spacing": 35
+        "spacing": 50.07000732421875
       },
       "perspective": 1,
       "motion": {
@@ -54,20 +54,20 @@
       },
       "eyes": {
         "left": {
-          "width": 22.501171874999997,
-          "height": 42.37773437499999,
+          "width": 34.82810355989263,
+          "height": 57.99772949218749,
           "x": 0,
           "y": -20.5,
           "angle": 0
         },
         "right": {
-          "width": 22.501171874999997,
-          "height": 42.37773437499999,
+          "width": 34.82810355989263,
+          "height": 57.99772949218749,
           "x": 0,
           "y": -20.5,
           "angle": 0
         },
-        "spacing": 54.3
+        "spacing": 69.37000732421875
       },
       "perspective": 1,
       "motion": {
@@ -83,20 +83,20 @@
       },
       "eyes": {
         "left": {
-          "width": 22.401171875000003,
-          "height": 54.5703125,
+          "width": 34.72810355989263,
+          "height": 70.1903076171875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 22.401171875000003,
-          "height": 54.5703125,
+          "width": 34.72810355989263,
+          "height": 70.1903076171875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 57.7
+        "spacing": 72.77000732421875
       },
       "perspective": 1,
       "motion": {
@@ -112,20 +112,20 @@
       },
       "eyes": {
         "left": {
-          "width": 23.090625000000003,
-          "height": 57.6796875,
+          "width": 35.41755668489263,
+          "height": 73.2996826171875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 49.924609375,
-          "height": 12.431640625,
+          "width": 62.251541059892645,
+          "height": 28.0516357421875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 56.3
+        "spacing": 71.37000732421875
       },
       "perspective": 1,
       "motion": {
@@ -141,20 +141,20 @@
       },
       "eyes": {
         "left": {
-          "width": 22.066796874999994,
-          "height": 39.599218750000006,
+          "width": 34.39372855989264,
+          "height": 55.219213867187506,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 22.066796874999994,
-          "height": 39.599218750000006,
+          "width": 34.39372855989264,
+          "height": 55.219213867187506,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 50.900000000000006
+        "spacing": 65.97000732421876
       },
       "perspective": 1,
       "motion": {
@@ -170,20 +170,20 @@
       },
       "eyes": {
         "left": {
-          "width": 52.084765625,
-          "height": 51.46715970849806,
+          "width": 64.41169730989265,
+          "height": 67.08715482568556,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 53.11410881916996,
-          "height": 52.18769994441695,
+          "width": 65.44104050406258,
+          "height": 67.80769506160445,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 69.5
+        "spacing": 84.57000732421875
       },
       "perspective": 1,
       "motion": {
@@ -199,20 +199,20 @@
       },
       "eyes": {
         "left": {
-          "width": 51.68336723153048,
-          "height": 51.74054108796297,
+          "width": 64.01029891642312,
+          "height": 67.36053620515047,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 51.68336723153048,
-          "height": 51.74054108796297,
+          "width": 64.01029891642312,
+          "height": 67.36053620515047,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 70.9
+        "spacing": 85.97000732421876
       },
       "perspective": 1,
       "motion": {
@@ -228,20 +228,20 @@
       },
       "eyes": {
         "left": {
-          "width": 51.775000000000006,
-          "height": 13.02734375,
+          "width": 64.10193168489263,
+          "height": 28.6473388671875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 51.775000000000006,
-          "height": 13.02734375,
+          "width": 64.10193168489263,
+          "height": 28.6473388671875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 63.872265625
+        "spacing": 78.94227294921875
       },
       "perspective": 1,
       "motion": {
@@ -257,20 +257,20 @@
       },
       "eyes": {
         "left": {
-          "width": 20.908203125,
-          "height": 40.400781249999994,
+          "width": 33.23513480989263,
+          "height": 56.020776367187494,
           "x": 0,
           "y": 0,
           "angle": -30.865625
         },
         "right": {
-          "width": 20.908203125,
-          "height": 40.400781249999994,
+          "width": 33.23513480989263,
+          "height": 56.020776367187494,
           "x": 0,
           "y": 0,
           "angle": 28.781640625
         },
-        "spacing": 52.059765625
+        "spacing": 67.12977294921875
       },
       "perspective": 1,
       "motion": {
@@ -286,20 +286,20 @@
       },
       "eyes": {
         "left": {
-          "width": 20.605859374999994,
-          "height": 47.769921874999994,
+          "width": 32.93279105989263,
+          "height": 63.389916992187494,
           "x": 0,
           "y": 0,
           "angle": 23.523046875000002
         },
         "right": {
-          "width": 20.605859374999994,
-          "height": 47.769921874999994,
+          "width": 32.93279105989263,
+          "height": 63.389916992187494,
           "x": 0,
           "y": 0,
           "angle": -24.042578125000002
         },
-        "spacing": 54.900000000000006
+        "spacing": 69.97000732421876
       },
       "perspective": 1,
       "motion": {
@@ -315,20 +315,20 @@
       },
       "eyes": {
         "left": {
-          "width": 42.5,
-          "height": 41.8,
+          "width": 54.82693168489263,
+          "height": 57.4199951171875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 22.1,
-          "height": 22.200000000000003,
+          "width": 34.42693168489264,
+          "height": 37.8199951171875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 61.7
+        "spacing": 76.77000732421875
       },
       "perspective": 1,
       "motion": {
@@ -344,20 +344,20 @@
       },
       "eyes": {
         "left": {
-          "width": 23.836718749999996,
-          "height": 58.130078125,
+          "width": 36.16365043489263,
+          "height": 73.7500732421875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 23.836718749999996,
-          "height": 58.130078125,
+          "width": 36.16365043489263,
+          "height": 73.7500732421875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 56.8
+        "spacing": 71.87000732421875
       },
       "perspective": 1,
       "motion": {
@@ -373,20 +373,20 @@
       },
       "eyes": {
         "left": {
-          "width": 34.20086765973213,
-          "height": 85.33085937499999,
+          "width": 46.52779934462477,
+          "height": 100.95085449218749,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 34.20086765973213,
-          "height": 83.17775668160692,
+          "width": 46.52779934462477,
+          "height": 98.79775179879442,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 59.414453124999994
+        "spacing": 74.48446044921874
       },
       "perspective": 1,
       "motion": {
@@ -402,20 +402,20 @@
       },
       "eyes": {
         "left": {
-          "width": 56.133984375,
-          "height": 15.5,
+          "width": 68.46091605989264,
+          "height": 31.1199951171875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 56.133984375,
-          "height": 15.155468749999997,
+          "width": 68.46091605989264,
+          "height": 30.775463867187497,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 69.276171875
+        "spacing": 84.34617919921875
       },
       "perspective": 1,
       "motion": {
@@ -431,20 +431,20 @@
       },
       "eyes": {
         "left": {
-          "width": 31.25390625,
-          "height": 76.720703125,
+          "width": 43.58083793489263,
+          "height": 92.3406982421875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 31.25390625,
-          "height": 76.720703125,
+          "width": 43.58083793489263,
+          "height": 92.3406982421875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 68.7
+        "spacing": 83.77000732421875
       },
       "perspective": 1,
       "motion": {
@@ -460,20 +460,20 @@
       },
       "eyes": {
         "left": {
-          "width": 24.306250000000006,
-          "height": 59.281640624999994,
+          "width": 36.633181684892634,
+          "height": 74.9016357421875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 48.92421875000001,
-          "height": 13.408203125,
+          "width": 61.25115043489265,
+          "height": 29.0281982421875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 62.218359375000006
+        "spacing": 77.28836669921876
       },
       "perspective": 1,
       "motion": {
@@ -489,20 +489,20 @@
       },
       "eyes": {
         "left": {
-          "width": 22.4609375,
-          "height": 39.820703124999994,
+          "width": 34.787869184892635,
+          "height": 55.440698242187494,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 22.4609375,
-          "height": 39.820703124999994,
+          "width": 34.787869184892635,
+          "height": 55.440698242187494,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 53.900000000000006
+        "spacing": 68.97000732421876
       },
       "perspective": 1,
       "motion": {
@@ -518,20 +518,20 @@
       },
       "eyes": {
         "left": {
-          "width": 19.602343750000003,
-          "height": 48.63984375,
+          "width": 31.929275434892638,
+          "height": 64.2598388671875,
           "x": 0,
           "y": 0,
           "angle": -27.606640625
         },
         "right": {
-          "width": 19.602343750000003,
-          "height": 48.63984375,
+          "width": 31.929275434892638,
+          "height": 64.2598388671875,
           "x": 0,
           "y": 0,
           "angle": 26.1484375
         },
-        "spacing": 55.099999999999994
+        "spacing": 70.17000732421874
       },
       "perspective": 1,
       "motion": {
@@ -547,20 +547,20 @@
       },
       "eyes": {
         "left": {
-          "width": 19.045145681988203,
-          "height": 43.370703125000006,
+          "width": 31.372077366880845,
+          "height": 58.990698242187506,
           "x": 0,
           "y": 0,
           "angle": 26.2921875
         },
         "right": {
-          "width": 19.045145681988203,
-          "height": 43.370703125000006,
+          "width": 31.372077366880845,
+          "height": 58.990698242187506,
           "x": 0,
           "y": 0,
           "angle": -20.249218750000004
         },
-        "spacing": 51.73124999999999
+        "spacing": 66.80125732421874
       },
       "perspective": 1,
       "motion": {
@@ -576,20 +576,20 @@
       },
       "eyes": {
         "left": {
-          "width": 42.1,
-          "height": 41.7,
+          "width": 54.42693168489264,
+          "height": 57.3199951171875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 22.200000000000003,
-          "height": 22.099999999999994,
+          "width": 34.52693168489263,
+          "height": 37.719995117187494,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 60.400000000000006
+        "spacing": 75.47000732421876
       },
       "perspective": 1,
       "motion": {
@@ -605,20 +605,20 @@
       },
       "eyes": {
         "left": {
-          "width": 23.045703125000003,
-          "height": 58.685156250000006,
+          "width": 35.37263480989263,
+          "height": 74.3051513671875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 23.045703125000003,
-          "height": 58.685156250000006,
+          "width": 35.37263480989263,
+          "height": 74.3051513671875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 56.2
+        "spacing": 71.27000732421875
       },
       "perspective": 1,
       "motion": {
@@ -634,20 +634,20 @@
       },
       "eyes": {
         "left": {
-          "width": 35.452734375,
-          "height": 79.10429687499999,
+          "width": 47.779666059892634,
+          "height": 94.72429199218749,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 35.452734375,
-          "height": 79.10429687499999,
+          "width": 47.779666059892634,
+          "height": 94.72429199218749,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 70.8
+        "spacing": 85.87000732421875
       },
       "perspective": 1,
       "motion": {
@@ -663,20 +663,20 @@
       },
       "eyes": {
         "left": {
-          "width": 51.400000000000006,
-          "height": 50.099999999999994,
+          "width": 63.726931684892634,
+          "height": 65.7199951171875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 50.5,
-          "height": 49.400000000000006,
+          "width": 62.82693168489263,
+          "height": 65.0199951171875,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 69
+        "spacing": 84.07000732421875
       },
       "perspective": 1,
       "motion": {
@@ -692,20 +692,20 @@
       },
       "eyes": {
         "left": {
-          "width": 55.672265624999994,
-          "height": 14.616015625000003,
+          "width": 67.99919730989264,
+          "height": 30.236010742187503,
           "x": 0,
           "y": 0,
           "angle": 0
         },
         "right": {
-          "width": 55.672265624999994,
-          "height": 14.616015625000003,
+          "width": 67.99919730989264,
+          "height": 30.236010742187503,
           "x": 0,
           "y": 0,
           "angle": 0
         },
-        "spacing": 68.416796875
+        "spacing": 83.48680419921875
       },
       "perspective": 1,
       "motion": {
@@ -721,20 +721,20 @@
       },
       "eyes": {
         "left": {
-          "width": 23.969921874999997,
-          "height": 55.892968749999994,
+          "width": 36.29685355989264,
+          "height": 71.5129638671875,
           "x": 0,
           "y": -9.8,
           "angle": 0
         },
         "right": {
-          "width": 53.56328125,
-          "height": 13.333593750000006,
+          "width": 65.89021293489265,
+          "height": 28.953588867187506,
           "x": 0,
           "y": -9.8,
           "angle": 0
         },
-        "spacing": 59.943749999999994
+        "spacing": 75.01375732421874
       },
       "perspective": 1,
       "motion": {
@@ -750,20 +750,20 @@
       },
       "eyes": {
         "left": {
-          "width": 21.5,
-          "height": 32,
+          "width": 33.826931684892635,
+          "height": 47.6199951171875,
           "x": 0,
           "y": 40,
           "angle": 0
         },
         "right": {
-          "width": 23.200000000000003,
-          "height": 33.5,
+          "width": 35.52693168489263,
+          "height": 49.1199951171875,
           "x": 0,
           "y": 40,
           "angle": 0
         },
-        "spacing": 51.2
+        "spacing": 66.27000732421875
       },
       "perspective": 1,
       "motion": {
@@ -779,20 +779,20 @@
       },
       "eyes": {
         "left": {
-          "width": 27.12656249999999,
-          "height": 63.028125,
+          "width": 39.453494184892634,
+          "height": 78.64812011718749,
           "x": 0,
           "y": 0,
           "angle": -36.244531249999994
         },
         "right": {
-          "width": 27.12656249999999,
-          "height": 63.028125,
+          "width": 39.453494184892634,
+          "height": 78.64812011718749,
           "x": 0,
           "y": 0,
           "angle": 27.730078125000002
         },
-        "spacing": 68.7
+        "spacing": 83.77000732421875
       },
       "perspective": 1,
       "motion": {
@@ -812,20 +812,20 @@
       },
       "eyes": {
         "left": {
-          "width": 20.605859374999994,
-          "height": 47.769921874999994,
+          "width": 32.93279105989263,
+          "height": 63.389916992187494,
           "x": 0,
           "y": 0,
           "angle": 23.523046875000002
         },
         "right": {
-          "width": 20.605859374999994,
-          "height": 47.769921874999994,
+          "width": 32.93279105989263,
+          "height": 63.389916992187494,
           "x": 0,
           "y": 0,
           "angle": -24.042578125000002
         },
-        "spacing": 54.900000000000006
+        "spacing": 69.97000732421876
       },
       "perspective": 1,
       "motion": {
@@ -834,38 +834,6 @@
       },
       "colors": {
         "body": "#adc3ff"
-      }
-    },
-    "recording": {
-      "head": {
-        "x": 3.7120339535742364,
-        "y": 0.5392100049640398,
-        "z": -0.05208686117461777
-      },
-      "eyes": {
-        "left": {
-          "width": 42.09996751568123,
-          "height": 83.15890248037869,
-          "x": 0,
-          "y": 0,
-          "angle": 0
-        },
-        "right": {
-          "width": 42.09996751568123,
-          "height": 83.15890248037869,
-          "x": 0,
-          "y": 0,
-          "angle": 0
-        },
-        "spacing": 150
-      },
-      "perspective": 1,
-      "motion": {
-        "eyes": "none",
-        "body": "none"
-      },
-      "colors": {
-        "body": "#143554"
       }
     }
   },
@@ -897,8 +865,7 @@
     "suspicious-right",
     "shy-downward",
     "angry-brows",
-    "uneasy-left",
-    "recording"
+    "uneasy-left"
   ],
   "animations": {
     "sleeping": {
@@ -907,19 +874,19 @@
         {
           "expression": "eyes-closed",
           "holdMs": 3600,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "drowsy-closed",
           "holdMs": 3600,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "sleepy-squint",
           "holdMs": 3600,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -942,7 +909,7 @@
         {
           "expression": "eyes-closed",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -965,13 +932,13 @@
         {
           "expression": "upward-side-glance",
           "holdMs": 5200,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "curious-left",
           "holdMs": 5200,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -994,19 +961,19 @@
         {
           "expression": "attentive-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "downward-gaze",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "gentle-downward-gaze",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1029,31 +996,31 @@
         {
           "expression": "curious-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "angry-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "skeptical-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "playful-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "skeptical-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1076,37 +1043,37 @@
         {
           "expression": "far-right-glance",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "asymmetric-down-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "surprised-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "wide-down-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "wide-downward-gaze",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "asymmetric-up-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1129,25 +1096,25 @@
         {
           "expression": "angry-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "angry-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "joyful-wide",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "attentive-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1170,31 +1137,31 @@
         {
           "expression": "joyful-down-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "playful-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "surprised-wide-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "surprised-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "joyful-wide",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1217,19 +1184,19 @@
         {
           "expression": "sleepy-squint",
           "holdMs": 3600,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "drowsy-closed",
           "holdMs": 3600,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "upward-side-glance",
           "holdMs": 3600,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1252,19 +1219,19 @@
         {
           "expression": "skeptical-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "skeptical-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "suspicious-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1287,13 +1254,13 @@
         {
           "expression": "angry-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "angry-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1339,19 +1306,19 @@
         {
           "expression": "sleepy-squint",
           "holdMs": 3600,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "drowsy-closed",
           "holdMs": 3600,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "eyes-closed",
           "holdMs": 3600,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1374,25 +1341,25 @@
         {
           "expression": "joyful-down-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "joyful-wide",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "playful-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "gentle-downward-gaze",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1415,25 +1382,25 @@
         {
           "expression": "surprised-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "surprised-wide-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "upward-side-glance",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "far-right-glance",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1456,19 +1423,19 @@
         {
           "expression": "skeptical-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "skeptical-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "curious-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1491,13 +1458,13 @@
         {
           "expression": "surprised-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "surprised-wide-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1520,19 +1487,19 @@
         {
           "expression": "far-right-glance",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "curious-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "joyful-down-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1555,19 +1522,19 @@
         {
           "expression": "upward-side-glance",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "shy-downward",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "eyes-closed",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1590,19 +1557,19 @@
         {
           "expression": "sleepy-squint",
           "holdMs": 3600,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "eyes-closed",
           "holdMs": 3600,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "drowsy-closed",
           "holdMs": 3600,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1625,19 +1592,19 @@
         {
           "expression": "joyful-down-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "joyful-wide",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "playful-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1660,13 +1627,13 @@
         {
           "expression": "surprised-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "surprised-wide-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1689,25 +1656,25 @@
         {
           "expression": "joyful-down-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "playful-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "joyful-wide",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "curious-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],
@@ -1730,19 +1697,19 @@
         {
           "expression": "joyful-down-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "curious-left",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         },
         {
           "expression": "playful-right",
           "holdMs": 2300,
-          "transitionMs": 380,
+          "transitionMs": 500,
           "transition": "smooth"
         }
       ],

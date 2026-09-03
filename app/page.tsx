@@ -3,6 +3,11 @@ import { redirect } from "next/navigation"
 import { DocBotProfileProvider } from "@/components/docbot-profile-provider"
 import { RecordingScreen } from "@/components/recording-screen"
 import { normalizeDocBotProfile } from "@/lib/docbot-profile"
+import {
+  DEFAULT_DOCBOT_CHAT_MODEL_ID,
+  MERCURY_CHAT_MODEL_ID,
+  type DocBotChatModelId,
+} from "@/lib/chat/models"
 import { getDocBotSessionSummaries } from "@/lib/sessions/server"
 import { createClient } from "@/lib/supabase/server"
 
@@ -26,14 +31,34 @@ export default async function Page() {
       ? metadataName.trim()
       : email.split("@")[0] || "DocBot user"
 
-  const [profileResult, initialSessions] = await Promise.all([
+  const loadProfile = () =>
     supabase
       .from("docbot_profiles")
       .select("username, avatar_id, avatar_colors")
       .eq("user_id", claims.sub)
-      .maybeSingle(),
+      .maybeSingle()
+
+  const [initialProfileResult, initialSessions] = await Promise.all([
+    loadProfile(),
     getDocBotSessionSummaries(supabase, claims.sub),
   ])
+  let profileResult = initialProfileResult
+
+  if (profileResult.status === 401) {
+    const { data: retryData, error: retryError } =
+      await supabase.auth.getClaims()
+
+    if (
+      retryError ||
+      !retryData?.claims ||
+      retryData.claims.sub !== claims.sub
+    ) {
+      redirect("/login")
+    }
+
+    profileResult = await loadProfile()
+  }
+
   const { data: profileRow, error: profileError } = profileResult
 
   if (profileError) {
@@ -52,6 +77,12 @@ export default async function Page() {
       : undefined,
     name
   )
+  const availableChatModelIds: DocBotChatModelId[] = [
+    DEFAULT_DOCBOT_CHAT_MODEL_ID,
+  ]
+  if (process.env.INCEPTION_API_KEY?.trim()) {
+    availableChatModelIds.push(MERCURY_CHAT_MODEL_ID)
+  }
 
   return (
     <DocBotProfileProvider
@@ -61,6 +92,7 @@ export default async function Page() {
       hasRemoteProfile={Boolean(profileRow)}
     >
       <RecordingScreen
+        availableChatModelIds={availableChatModelIds}
         initialSessions={initialSessions}
         user={{
           id: claims.sub,

@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { Geist_Mono, IBM_Plex_Sans } from "next/font/google"
+import Script from "next/script"
 
 import "@bible-strong/avatar-react/styles.css"
 import "./globals.css"
@@ -21,6 +22,26 @@ export const metadata: Metadata = {
   description: "Record a conversation or upload audio to DocBot.",
 }
 
+const themeBootstrap = `
+(function () {
+  var theme = "system";
+
+  try {
+    var storedTheme = window.localStorage.getItem("theme");
+    if (storedTheme === "dark" || storedTheme === "light" || storedTheme === "system") {
+      theme = storedTheme;
+    }
+  } catch (_) {}
+
+  var resolvedTheme = theme === "system"
+    ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+    : theme;
+
+  document.documentElement.classList.toggle("dark", resolvedTheme === "dark");
+  document.documentElement.style.colorScheme = resolvedTheme;
+})();
+`
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -37,6 +58,9 @@ export default function RootLayout({
       )}
     >
       <body>
+        <Script id="docbot-theme-bootstrap" strategy="beforeInteractive">
+          {themeBootstrap}
+        </Script>
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

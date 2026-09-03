@@ -8,6 +8,7 @@ import {
   DOCX_MIME_TYPE,
   HISTORIA_CLINICA_TEMPLATE_KEY,
   renderHistoriaClinicaDocxBuffer,
+  renderHistoriaClinicaDocxTemplateBuffer,
 } from "@/lib/historia-clinica-docx"
 import {
   historiaClinicaDraftSchema,
@@ -25,6 +26,10 @@ import {
   type ClinicalDocumentReplacement,
 } from "@/lib/reports/docx-editor"
 import type { Database, Json } from "@/lib/supabase/database.types"
+import { normalizeStoredTemplateMappings } from "@/lib/templates/manifest"
+import { createResolvedCustomTemplateRenderData } from "@/lib/templates/slot-values"
+import { resolveCustomTemplateForSession } from "@/lib/templates/server"
+import type { TemplateExtractionMode } from "@/lib/templates/validation"
 
 export type DocBotReportContext = {
   clinicalJson: HistoriaClinicaDraft
@@ -86,11 +91,13 @@ export async function getCurrentDocBotReport(
 export async function createInitialDocBotReport({
   draft,
   processingJobId,
+  sourceEvidence,
   supabase,
   userId,
 }: {
   draft: HistoriaClinicaDraft
   processingJobId: string
+  sourceEvidence: string
   supabase: SupabaseClient<Database>
   userId: string
 }) {
@@ -120,7 +127,7 @@ export async function createInitialDocBotReport({
 
   const { data: existingReportRow, error: reportError } = await supabase
     .from("docbot_reports")
-    .select("id")
+    .select("id, template_key, template_version_id")
     .eq("session_id", session.id)
     .eq("user_id", userId)
     .maybeSingle()
@@ -129,16 +136,23 @@ export async function createInitialDocBotReport({
   let report = existingReportRow
 
   if (!report) {
+    const selectedTemplate = await resolveCustomTemplateForSession({
+      sessionId: session.id,
+      supabase,
+      userId,
+    })
     const reportId = randomUUID()
     const { data: insertedReport, error: insertReportError } = await supabase
       .from("docbot_reports")
       .insert({
         id: reportId,
         session_id: session.id,
-        template_key: HISTORIA_CLINICA_TEMPLATE_KEY,
+        template_key:
+          selectedTemplate?.templateKey ?? HISTORIA_CLINICA_TEMPLATE_KEY,
+        template_version_id: selectedTemplate?.templateVersionId ?? null,
         user_id: userId,
       })
-      .select("id")
+      .select("id, template_key, template_version_id")
       .single()
 
     if (insertReportError) {
@@ -147,7 +161,7 @@ export async function createInitialDocBotReport({
       const { data: concurrentReport, error: concurrentReportError } =
         await supabase
           .from("docbot_reports")
-          .select("id")
+          .select("id, template_key, template_version_id")
           .eq("session_id", session.id)
           .eq("user_id", userId)
           .single()
@@ -179,7 +193,35 @@ export async function createInitialDocBotReport({
     return getRequiredCurrentReport(supabase, userId, session.id)
   }
 
-  const rendered = await renderHistoriaClinicaDocxBuffer(parsedDraft)
+  const rendered = report.template_version_id
+    ? await renderPinnedCustomTemplate({
+        draft: parsedDraft,
+        sourceEvidence,
+        supabase,
+        templateKey: report.template_key,
+        templateVersionId: report.template_version_id,
+        userId,
+      }).catch(async (error) => {
+        console.error(
+          "[reports] custom template render failed; using built-in",
+          {
+            message: error instanceof Error ? error.message : String(error),
+            sessionId: session.id,
+            templateVersionId: report.template_version_id,
+          }
+        )
+        await supabase
+          .from("docbot_reports")
+          .update({
+            template_key: HISTORIA_CLINICA_TEMPLATE_KEY,
+            template_version_id: null,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", report.id)
+          .eq("user_id", userId)
+        return renderHistoriaClinicaDocxBuffer(parsedDraft)
+      })
+    : await renderHistoriaClinicaDocxBuffer(parsedDraft)
   const documentText = await readClinicalDocumentText(rendered.buffer)
   const revisionId = randomUUID()
   const documentObjectKey = createR2ReportObjectKey({
@@ -228,6 +270,51 @@ export async function createInitialDocBotReport({
   })
 
   return getRequiredCurrentReport(supabase, userId, session.id)
+}
+
+async function renderPinnedCustomTemplate({
+  draft,
+  sourceEvidence,
+  supabase,
+  templateKey,
+  templateVersionId,
+  userId,
+}: {
+  draft: HistoriaClinicaDraft
+  sourceEvidence: string
+  supabase: SupabaseClient<Database>
+  templateKey: string
+  templateVersionId: string
+  userId: string
+}) {
+  const { data: version, error } = await supabase
+    .from("docbot_template_versions")
+    .select("extraction_mode, field_mappings, sanitized_object_key, status")
+    .eq("id", templateVersionId)
+    .eq("user_id", userId)
+    .maybeSingle()
+  if (error) throw error
+  if (version?.status !== "ready" || !version.sanitized_object_key) {
+    throw new Error("The pinned custom template artifact is unavailable.")
+  }
+
+  const { body } = await downloadR2Object(version.sanitized_object_key)
+  const mappings = normalizeStoredTemplateMappings(version.field_mappings)
+  if (mappings.length === 0) {
+    throw new Error("The pinned custom template has no usable slot manifest.")
+  }
+  const templateData = await createResolvedCustomTemplateRenderData({
+    draft,
+    extractionMode: version.extraction_mode as TemplateExtractionMode,
+    mappings,
+    sourceEvidence,
+  })
+  return renderHistoriaClinicaDocxTemplateBuffer({
+    draft,
+    templateBuffer: body,
+    templateData,
+    templateKey,
+  })
 }
 
 export async function editCurrentDocBotReport({

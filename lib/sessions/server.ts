@@ -36,7 +36,7 @@ export async function getDocBotSessionSummaries(
     throw new Error("Unable to load DocBot sessions.", { cause: error })
   }
 
-  return data.map(toDocBotSessionSummary)
+  return attachSessionTags(supabase, userId, data.map(toDocBotSessionSummary))
 }
 
 export async function getLatestDocBotSessionForUpload(
@@ -63,7 +63,10 @@ export async function getLatestDocBotSessionForUpload(
     })
   }
 
-  return data ? toDocBotSessionSummary(data) : null
+  if (!data) return null
+  return (
+    await attachSessionTags(supabase, userId, [toDocBotSessionSummary(data)])
+  )[0]
 }
 
 export async function renameDocBotSession(
@@ -86,7 +89,10 @@ export async function renameDocBotSession(
     throw new Error("Unable to rename the DocBot session.", { cause: error })
   }
 
-  return data ? toDocBotSessionSummary(data) : null
+  if (!data) return null
+  return (
+    await attachSessionTags(supabase, userId, [toDocBotSessionSummary(data)])
+  )[0]
 }
 
 export async function archiveDocBotSession(
@@ -256,7 +262,53 @@ function toDocBotSessionSummary(session: {
     id: session.id,
     lastActivityAt: session.last_activity_at,
     processingJobId: session.processing_job_id,
+    tags: [],
     title: session.title,
     uploadId: session.upload_id,
   }
+}
+
+async function attachSessionTags(
+  supabase: SupabaseClient<Database>,
+  userId: string,
+  sessions: DocBotSessionSummary[]
+) {
+  if (sessions.length === 0) return sessions
+
+  const sessionIds = sessions.map((session) => session.id)
+  const { data: sessionTags, error: sessionTagsError } = await supabase
+    .from("docbot_session_tags")
+    .select("session_id, tag_id")
+    .eq("user_id", userId)
+    .in("session_id", sessionIds)
+  if (sessionTagsError) {
+    throw new Error("Unable to load DocBot session tags.", {
+      cause: sessionTagsError,
+    })
+  }
+  if (sessionTags.length === 0) return sessions
+
+  const { data: tags, error: tagsError } = await supabase
+    .from("docbot_tags")
+    .select("id, name")
+    .eq("user_id", userId)
+    .in("id", [...new Set(sessionTags.map((entry) => entry.tag_id))])
+  if (tagsError) {
+    throw new Error("Unable to load DocBot tags.", { cause: tagsError })
+  }
+
+  const tagNames = new Map(tags.map((tag) => [tag.id, tag.name]))
+  const tagsBySession = new Map<string, string[]>()
+  for (const entry of sessionTags) {
+    const name = tagNames.get(entry.tag_id)
+    if (!name) continue
+    const names = tagsBySession.get(entry.session_id) ?? []
+    names.push(name)
+    tagsBySession.set(entry.session_id, names)
+  }
+
+  return sessions.map((session) => ({
+    ...session,
+    tags: tagsBySession.get(session.id) ?? [],
+  }))
 }

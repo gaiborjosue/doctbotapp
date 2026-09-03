@@ -16,6 +16,8 @@ import {
 } from "@/lib/session-title"
 import type { Json, Tables } from "@/lib/supabase/database.types"
 import { createClient } from "@/lib/supabase/server"
+import { replaceUploadTags } from "@/lib/templates/server"
+import { sessionTagsSchema } from "@/lib/templates/validation"
 import {
   MAX_AUDIO_BYTES,
   resolveGeminiAudioMimeType,
@@ -26,6 +28,7 @@ export const maxDuration = 300
 
 const requestSchema = z.object({
   force: z.boolean().optional().default(false),
+  tags: sessionTagsSchema.optional().default([]),
   uploadId: z.string().uuid(),
 })
 
@@ -79,6 +82,13 @@ export async function POST(request: Request) {
         { status: 409 }
       )
     }
+
+    await replaceUploadTags({
+      supabase,
+      tags: payload.tags,
+      uploadId: upload.id,
+      userId: claims.sub,
+    })
 
     const reusableJob = await findReusableJob({
       includeCompleted: !payload.force,
@@ -169,6 +179,7 @@ export async function POST(request: Request) {
         .update({
           completed_at: isTerminal ? submittedAt : null,
           error_message: interaction.errorMessage,
+          evidence_text: interaction.evidenceText,
           interaction_id: interaction.interactionId,
           last_polled_at: submittedAt,
           output_json: interaction.outputJson
@@ -190,6 +201,11 @@ export async function POST(request: Request) {
         if (!interaction.outputJson) {
           throw new Error("Gemini did not return a valid clinical record.")
         }
+        const sourceEvidence =
+          interaction.evidenceText ?? interaction.outputText
+        if (!sourceEvidence) {
+          throw new Error("Gemini did not return grounded clinical evidence.")
+        }
 
         if (interaction.outputText) {
           await generateAndPersistDocBotSessionTitle({
@@ -209,6 +225,7 @@ export async function POST(request: Request) {
         await createInitialDocBotReport({
           draft: interaction.outputJson,
           processingJobId: job.id,
+          sourceEvidence,
           supabase,
           userId: claims.sub,
         })

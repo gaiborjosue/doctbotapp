@@ -3,6 +3,7 @@ export type DocBotSessionSummary = {
   id: string
   lastActivityAt: string
   processingJobId: string
+  tags: string[]
   title: string
   uploadId: string
 }

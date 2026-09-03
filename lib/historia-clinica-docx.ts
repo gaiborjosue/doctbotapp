@@ -24,6 +24,24 @@ export async function renderHistoriaClinicaDocxBuffer(
   draft: HistoriaClinicaDraft
 ) {
   const templateBuffer = await readFile(TEMPLATE_PATH)
+  return renderHistoriaClinicaDocxTemplateBuffer({
+    draft,
+    templateBuffer,
+    templateKey: HISTORIA_CLINICA_TEMPLATE_KEY,
+  })
+}
+
+export async function renderHistoriaClinicaDocxTemplateBuffer({
+  draft,
+  templateBuffer,
+  templateData,
+  templateKey,
+}: {
+  draft: HistoriaClinicaDraft
+  templateBuffer: Uint8Array
+  templateData?: Record<string, unknown>
+  templateKey: string
+}) {
   const zip = new PizZip(templateBuffer)
   const documentXml = zip.file(DOCUMENT_XML_PATH)?.asText()
 
@@ -38,7 +56,7 @@ export async function renderHistoriaClinicaDocxBuffer(
     nullGetter: () => "",
   })
 
-  doc.render(normalizeTemplateData(draft))
+  doc.render(normalizeTemplateData(templateData ?? draft))
 
   return {
     buffer: doc.getZip().generate({
@@ -46,7 +64,7 @@ export async function renderHistoriaClinicaDocxBuffer(
       compression: "DEFLATE",
     }) as Buffer,
     placeholderCount: extractDocxtemplaterTags(documentXml).length,
-    templateKey: HISTORIA_CLINICA_TEMPLATE_KEY,
+    templateKey,
   }
 }
 

@@ -46,6 +46,7 @@ import {
 import { AvatarPickerDialog } from "@/components/avatar-picker-dialog"
 import { ChatHistorySidebar } from "@/components/chat-history-sidebar"
 import { ClinicalDocumentChangePreview } from "@/components/clinical-document-change-preview"
+import { TemplateManagerDialog } from "@/components/template-manager-dialog"
 import {
   Conversation,
   ConversationContent,
@@ -90,6 +91,7 @@ import {
 import { useDocBotProfile } from "@/components/docbot-profile-provider"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field"
 import {
   FamilyDrawerAnimatedContent,
   FamilyDrawerAnimatedWrapper,
@@ -103,6 +105,15 @@ import {
   useFamilyDrawer,
 } from "@/components/ui/family-drawer"
 import { PopoverForm } from "@/components/ui/popover-form"
+import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { ShimmeringText } from "@/components/ui/shimmering-text"
@@ -118,6 +129,12 @@ import {
 } from "@/lib/avatars/registry"
 import type { DocBotUIMessage } from "@/lib/agents/docbot-agent"
 import { DOCBOT_CONTEXT_TOKEN_LIMIT } from "@/lib/chat/context-types"
+import {
+  DEFAULT_DOCBOT_CHAT_MODEL_ID,
+  DOCBOT_CHAT_MODEL_OPTIONS,
+  isDocBotChatModelId,
+  type DocBotChatModelId,
+} from "@/lib/chat/models"
 import {
   discardLiveRecording,
   recoverLatestLiveRecording,
@@ -148,6 +165,7 @@ import {
   unarchiveDocBotSession as unarchiveDocBotSessionRequest,
 } from "@/lib/sessions/client"
 import type { DocBotSessionSummary } from "@/lib/sessions/types"
+import { MAX_SESSION_TAGS, parseTagInput } from "@/lib/templates/validation"
 import {
   uploadDocBotFiles,
   type DuplicateAudioUpload,
@@ -184,6 +202,23 @@ const PROMPT_DICTATION_MAX_DURATION = 90_000
 const PROMPT_DICTATION_SILENCE_DURATION = 8_000
 const PROMPT_DICTATION_SILENCE_TIMER_DURATION =
   PROMPT_DICTATION_SILENCE_DURATION - PROMPT_DICTATION_SPEECH_END_LATENCY_MS
+
+function getLatestAvailableChatModelId(
+  messages: DocBotUIMessage[],
+  availableChatModelIds: DocBotChatModelId[]
+) {
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    const modelId = messages[index].metadata?.modelId
+    if (
+      isDocBotChatModelId(modelId) &&
+      availableChatModelIds.includes(modelId)
+    ) {
+      return modelId
+    }
+  }
+
+  return DEFAULT_DOCBOT_CHAT_MODEL_ID
+}
 
 function getDocBotThinkingMessage(isStreaming: boolean, duration?: number) {
   if (isStreaming || duration === 0) {
@@ -463,6 +498,8 @@ function RecordingDecision({
   onDiscardConfirmationChange,
   onProcessAgain,
   onSave,
+  sessionTags,
+  onSessionTagsChange,
 }: {
   duration: number
   onContinueExisting: (session: DocBotSessionSummary) => void
@@ -473,6 +510,8 @@ function RecordingDecision({
     onProgress: (progress: number) => void,
     onStage: (stage: UploadStage) => void
   ) => Promise<UploadDocBotFilesResult>
+  sessionTags: string
+  onSessionTagsChange: (value: string) => void
 }) {
   const { view, setView } = useFamilyDrawer()
   const [duplicateAudio, setDuplicateAudio] = useState<DuplicateAudioUpload>()
@@ -560,6 +599,13 @@ function RecordingDecision({
           {formatDuration(duration)}
         </span>
       </div>
+
+      <SessionTagsField
+        id="recording-session-tags"
+        className="mt-4"
+        value={sessionTags}
+        onChange={onSessionTagsChange}
+      />
 
       <div className="mt-6 flex flex-col gap-3">
         <PopoverForm
@@ -879,6 +925,8 @@ function AudioUploadFlow({
   onContinueExisting,
   onProcessAgain,
   onUpload,
+  sessionTags,
+  onSessionTagsChange,
 }: {
   file?: File
   contextFiles: File[]
@@ -895,6 +943,8 @@ function AudioUploadFlow({
     onProgress: (progress: number) => void,
     onStage: (stage: UploadStage) => void
   ) => Promise<UploadDocBotFilesResult>
+  sessionTags: string
+  onSessionTagsChange: (value: string) => void
 }) {
   const { view, setView } = useFamilyDrawer()
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -1099,6 +1149,14 @@ function AudioUploadFlow({
             </div>
           </div>
 
+          <SessionTagsField
+            id="upload-session-tags"
+            className="mt-4"
+            disabled={isUploading}
+            value={sessionTags}
+            onChange={onSessionTagsChange}
+          />
+
           {isUploading ? (
             <div className="mt-4" aria-live="polite">
               <div className="mb-1.5 flex items-center justify-between text-xs text-muted-foreground">
@@ -1231,6 +1289,13 @@ function AudioUploadFlow({
           />
           <p className="min-w-0 truncate text-sm font-medium">{file.name}</p>
         </div>
+
+        <SessionTagsField
+          id="ready-session-tags"
+          className="mt-4"
+          value={sessionTags}
+          onChange={onSessionTagsChange}
+        />
 
         <div className="mt-6 flex flex-col gap-3">
           <FamilyDrawerButton
@@ -1456,10 +1521,49 @@ function AudioUploadFlow({
   )
 }
 
+function SessionTagsField({
+  className,
+  disabled,
+  id,
+  onChange,
+  value,
+}: {
+  className?: string
+  disabled?: boolean
+  id: string
+  onChange: (value: string) => void
+  value: string
+}) {
+  const tags = parseTagInput(value, MAX_SESSION_TAGS)
+
+  return (
+    <Field className={className}>
+      <FieldLabel htmlFor={id}>
+        Session tags <span className="text-muted-foreground">Optional</span>
+      </FieldLabel>
+      <Input
+        disabled={disabled}
+        id={id}
+        maxLength={220}
+        onChange={(event) => onChange(event.currentTarget.value)}
+        placeholder="e.g. cardiology, inpatient"
+        value={value}
+      />
+      <FieldDescription>
+        {tags.length > 0
+          ? `${tags.length}/${MAX_SESSION_TAGS} tags · used to select your document template`
+          : "Separate tags with commas to select a matching document template."}
+      </FieldDescription>
+    </Field>
+  )
+}
+
 export function RecordingScreen({
+  availableChatModelIds,
   initialSessions,
   user,
 }: {
+  availableChatModelIds: DocBotChatModelId[]
   initialSessions: DocBotSessionSummary[]
   user: AuthenticatedUser
 }) {
@@ -1477,6 +1581,7 @@ export function RecordingScreen({
   const FailureDocBotAvatar = activeAvatar.FailureAvatar
   const avatarRef = useRef<HTMLDivElement>(null)
   const activeSessionIdRef = useRef<string | undefined>(undefined)
+  const chatModelIdRef = useRef<DocBotChatModelId>(DEFAULT_DOCBOT_CHAT_MODEL_ID)
   const conversationRequestRef = useRef<AbortController | undefined>(undefined)
   const promptDictationRef = useRef<PromptDictationRecorder | undefined>(
     undefined
@@ -1496,6 +1601,7 @@ export function RecordingScreen({
   const chatAvatarExitTimerRef = useRef<number | undefined>(undefined)
   const pendingChatExitActionRef = useRef(false)
   const [isAvatarPickerOpen, setIsAvatarPickerOpen] = useState(false)
+  const [isTemplateManagerOpen, setIsTemplateManagerOpen] = useState(false)
   const [avatarPickerSession, setAvatarPickerSession] = useState(0)
   const [avatarAnimationSeed, setAvatarAnimationSeed] = useState(0)
   const [sessions, setSessions] = useState(initialSessions)
@@ -1507,6 +1613,9 @@ export function RecordingScreen({
     useState(false)
   const [isShowingArchived, setIsShowingArchived] = useState(false)
   const [activeSessionId, setActiveSessionId] = useState<string>()
+  const [chatModelId, setChatModelId] = useState<DocBotChatModelId>(
+    DEFAULT_DOCBOT_CHAT_MODEL_ID
+  )
   const [isPersistedSessionOpen, setIsPersistedSessionOpen] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
@@ -1533,6 +1642,7 @@ export function RecordingScreen({
   const [savedDuration, setSavedDuration] = useState<number>()
   const [selectedFile, setSelectedFile] = useState<File>()
   const [contextFiles, setContextFiles] = useState<File[]>([])
+  const [sessionTagInput, setSessionTagInput] = useState("")
   const [followExpression, setFollowExpression] = useState<FollowExpression>()
   const [chatPrompt, setChatPrompt] = useState("")
   const [promptDictationError, setPromptDictationError] = useState<string>()
@@ -1564,7 +1674,9 @@ export function RecordingScreen({
             throw new Error("A DocBot session is required before chatting.")
           }
 
-          return { body: { message, sessionId } }
+          return {
+            body: { message, modelId: chatModelIdRef.current, sessionId },
+          }
         },
       }),
     []
@@ -1664,6 +1776,13 @@ export function RecordingScreen({
   )
   const isChatResponding =
     chatStatus === "submitted" || chatStatus === "streaming"
+  const hasPendingDocumentApproval = chatMessages.some((message) =>
+    message.parts.some(
+      (part) =>
+        part.type === "tool-editClinicalDocument" &&
+        part.state === "approval-requested"
+    )
+  )
   const isChatUserTyping =
     chatPrompt.trim().length > 0 || promptDictationState !== "idle"
   const isChatListening = promptDictationState === "recording"
@@ -1672,6 +1791,7 @@ export function RecordingScreen({
     : "docbot-chat-avatar-pending"
   const showAvatarEdit =
     !isAvatarPickerOpen &&
+    !isTemplateManagerOpen &&
     !isDecisionOpen &&
     !isRecordingNoticeOpen &&
     !isPersistedSessionOpen &&
@@ -1763,6 +1883,8 @@ export function RecordingScreen({
         setChatAgentState("idle")
         setLoadedDocumentRevisionNumber(1)
         setIsChatAvatarExiting(false)
+        chatModelIdRef.current = DEFAULT_DOCBOT_CHAT_MODEL_ID
+        setChatModelId(DEFAULT_DOCBOT_CHAT_MODEL_ID)
         setChatMessages([
           {
             id: `source-${job.jobId}`,
@@ -2215,6 +2337,7 @@ export function RecordingScreen({
     setIsRecordingStarting(true)
     setLiveRecordingFile(undefined)
     setLiveRecordingId(undefined)
+    setSessionTagInput("")
 
     try {
       if (previousController) await previousController.cancel()
@@ -2380,7 +2503,10 @@ export function RecordingScreen({
     }
 
     try {
-      const job = await startUploadedAudioProcessing(uploadId, { force })
+      const job = await startUploadedAudioProcessing(uploadId, {
+        force,
+        tags: parseTagInput(sessionTagInput, MAX_SESSION_TAGS),
+      })
       if (!applyUploadedAudioJob(job)) setProcessingJobId(job.jobId)
     } catch (error) {
       setProcessingError(
@@ -2471,6 +2597,7 @@ export function RecordingScreen({
     setIsConversationLoading(false)
     setSelectedFile(undefined)
     setContextFiles([])
+    setSessionTagInput("")
     setUploadedAudioId(undefined)
     setProcessingState("idle")
     setProcessingSource("upload")
@@ -2636,6 +2763,8 @@ export function RecordingScreen({
     setProcessingJobId(undefined)
     setProcessingError(undefined)
     setLoadedDocumentRevisionNumber(undefined)
+    chatModelIdRef.current = DEFAULT_DOCBOT_CHAT_MODEL_ID
+    setChatModelId(DEFAULT_DOCBOT_CHAT_MODEL_ID)
     setChatMessages([])
     setChatPrompt("")
     clearChatError()
@@ -2654,6 +2783,12 @@ export function RecordingScreen({
           return
         }
 
+        const restoredModelId = getLatestAvailableChatModelId(
+          messages,
+          availableChatModelIds
+        )
+        chatModelIdRef.current = restoredModelId
+        setChatModelId(restoredModelId)
         setLoadedDocumentRevisionNumber(documentRevisionNumber)
         setChatMessages(messages)
       })
@@ -2699,6 +2834,21 @@ export function RecordingScreen({
     })
   }
 
+  function changeChatModel(modelId: DocBotChatModelId | null) {
+    if (
+      !modelId ||
+      !availableChatModelIds.includes(modelId) ||
+      isChatResponding ||
+      isConversationLoading ||
+      hasPendingDocumentApproval
+    ) {
+      return
+    }
+
+    chatModelIdRef.current = modelId
+    setChatModelId(modelId)
+  }
+
   function leaveChatSessionView() {
     cancelPromptDictation()
     void stopChatResponse()
@@ -2732,6 +2882,7 @@ export function RecordingScreen({
     setElapsedSeconds(0)
     setSelectedFile(undefined)
     setContextFiles([])
+    setSessionTagInput("")
     setUploadedAudioId(undefined)
     setProcessingSource("recording")
     setProcessingJobId(undefined)
@@ -2874,6 +3025,7 @@ export function RecordingScreen({
         onBeforeLeave={plopOutChatAvatar}
         onDeleteSession={deletePersistedSession}
         onGoHome={returnToMainView}
+        onOpenTemplates={() => setIsTemplateManagerOpen(true)}
         onRenameSession={renamePersistedSession}
         onRestoreSession={restorePersistedSession}
         onSelectSession={selectPersistedSession}
@@ -3173,50 +3325,104 @@ export function RecordingScreen({
                         ) : (
                           <span />
                         )}
-                        <Context
-                          maxTokens={
-                            contextSnapshot?.maxTokens ??
-                            DOCBOT_CONTEXT_TOKEN_LIMIT
-                          }
-                          usage={latestContextMetadata?.usage}
-                          usedTokens={contextSnapshot?.usedTokens ?? 0}
-                        >
-                          <ContextTrigger
-                            aria-label="View chat context usage"
-                            className="h-6 gap-1 rounded-md px-1.5 text-[10px]"
-                            size="xs"
-                          />
-                          <ContextContent
-                            align="end"
-                            className="w-64"
-                            side="bottom"
-                            sideOffset={6}
+                        <div className="flex shrink-0 items-center gap-1">
+                          <Select
+                            items={DOCBOT_CHAT_MODEL_OPTIONS}
+                            value={chatModelId}
+                            onValueChange={changeChatModel}
                           >
-                            <ContextContentHeader />
-                            <ContextContentBody className="space-y-1.5">
-                              <ContextInputUsage />
-                              <ContextOutputUsage />
-                              <ContextReasoningUsage />
-                              <ContextCacheUsage />
-                              <div className="flex items-center justify-between gap-3 text-xs">
-                                <span className="text-muted-foreground">
-                                  Recent messages
-                                </span>
-                                <span className="tabular-nums">
-                                  {contextSnapshot?.exactMessageCount ?? 0}
-                                </span>
-                              </div>
-                              <div className="flex items-center justify-between gap-3 text-xs">
-                                <span className="text-muted-foreground">
-                                  Compressed messages
-                                </span>
-                                <span className="tabular-nums">
-                                  {contextSnapshot?.compactedMessageCount ?? 0}
-                                </span>
-                              </div>
-                            </ContextContentBody>
-                          </ContextContent>
-                        </Context>
+                            <SelectTrigger
+                              aria-label="Chat model"
+                              className="max-w-28"
+                              disabled={
+                                isChatResponding ||
+                                isConversationLoading ||
+                                hasPendingDocumentApproval
+                              }
+                              size="sm"
+                            >
+                              <SelectValue>
+                                {
+                                  DOCBOT_CHAT_MODEL_OPTIONS.find(
+                                    (option) => option.value === chatModelId
+                                  )?.shortLabel
+                                }
+                              </SelectValue>
+                            </SelectTrigger>
+                            <SelectContent
+                              align="end"
+                              alignItemWithTrigger={false}
+                              sideOffset={6}
+                            >
+                              <SelectGroup>
+                                {DOCBOT_CHAT_MODEL_OPTIONS.map((option) => {
+                                  const isAvailable =
+                                    availableChatModelIds.includes(option.value)
+
+                                  return (
+                                    <SelectItem
+                                      key={option.value}
+                                      disabled={!isAvailable}
+                                      value={option.value}
+                                    >
+                                      <span>{option.label}</span>
+                                      {!isAvailable ? (
+                                        <span className="text-muted-foreground">
+                                          Not configured
+                                        </span>
+                                      ) : null}
+                                    </SelectItem>
+                                  )
+                                })}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                          <Context
+                            maxTokens={
+                              contextSnapshot?.maxTokens ??
+                              DOCBOT_CONTEXT_TOKEN_LIMIT
+                            }
+                            usage={latestContextMetadata?.usage}
+                            usedTokens={contextSnapshot?.usedTokens ?? 0}
+                          >
+                            <ContextTrigger
+                              aria-label="View chat context usage"
+                              className="h-6 gap-1 rounded-md px-1.5 text-[10px]"
+                              size="xs"
+                            />
+                            <ContextContent
+                              align="end"
+                              className="w-64"
+                              side="bottom"
+                              sideOffset={6}
+                            >
+                              <ContextContentHeader />
+                              <ContextContentBody className="space-y-1.5">
+                                <ContextInputUsage />
+                                <ContextOutputUsage />
+                                <ContextReasoningUsage />
+                                <ContextCacheUsage />
+                                <div className="flex items-center justify-between gap-3 text-xs">
+                                  <span className="text-muted-foreground">
+                                    Recent messages
+                                  </span>
+                                  <span className="tabular-nums">
+                                    {contextSnapshot?.exactMessageCount ?? 0}
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-between gap-3 text-xs">
+                                  <span className="text-muted-foreground">
+                                    Compressed messages
+                                  </span>
+                                  <span className="tabular-nums">
+                                    {contextSnapshot?.compactedMessageCount ??
+                                      0}
+                                  </span>
+                                </div>
+                              </ContextContentBody>
+                            </ContextContent>
+                          </Context>
+                        </div>
                       </div>
                       <Conversation
                         className="min-h-0"
@@ -4056,6 +4262,13 @@ export function RecordingScreen({
             onSave={saveProfile}
           />
 
+          {isTemplateManagerOpen ? (
+            <TemplateManagerDialog
+              open
+              onOpenChange={setIsTemplateManagerOpen}
+            />
+          ) : null}
+
           <FamilyDrawerPortal>
             <FamilyDrawerOverlay />
             <FamilyDrawerContent>
@@ -4077,6 +4290,8 @@ export function RecordingScreen({
                       onDiscardConfirmationChange={setIsConfirmingDiscard}
                       onProcessAgain={processDuplicateRecording}
                       onSave={saveAndContinue}
+                      sessionTags={sessionTagInput}
+                      onSessionTagsChange={setSessionTagInput}
                     />
                   ) : (
                     <AudioUploadFlow
@@ -4090,6 +4305,8 @@ export function RecordingScreen({
                       onContinueExisting={continueToDuplicateSession}
                       onProcessAgain={processDuplicateAudio}
                       onUpload={uploadSelectedFiles}
+                      sessionTags={sessionTagInput}
+                      onSessionTagsChange={setSessionTagInput}
                     />
                   )}
                 </FamilyDrawerAnimatedContent>

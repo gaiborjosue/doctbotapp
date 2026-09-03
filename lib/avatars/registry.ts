@@ -7,7 +7,7 @@ import citrusDefinition from "@/lib/avatars/definitions/citrus.avatar.json"
 import cloudeeDefinition from "@/lib/avatars/definitions/cloudee.avatar.json"
 import cubeeDefinition from "@/lib/avatars/definitions/cubee.avatar.json"
 import freddyDefinition from "@/lib/avatars/definitions/freddy.avatar.json"
-import grokBotDefinition from "@/lib/avatars/definitions/grok-bot.avatar.json"
+import docBotDefinition from "@/lib/avatars/definitions/grok-bot.avatar.json"
 import kirbyDefinition from "@/lib/avatars/definitions/kirby.avatar.json"
 import novaDefinition from "@/lib/avatars/definitions/nova.avatar.json"
 import oneeDefinition from "@/lib/avatars/definitions/onee.avatar.json"
@@ -47,7 +47,9 @@ function createAvatarOption<const Id extends string>(
 }
 
 export const AVATAR_OPTIONS = [
-  createAvatarOption("grok-bot", grokBotDefinition),
+  // Keep the original ID so existing profile selections and color overrides
+  // transparently receive the new DocBot definition.
+  createAvatarOption("grok-bot", docBotDefinition),
   createAvatarOption("strobi", strobiDefinition),
   createAvatarOption("freddy", freddyDefinition),
   createAvatarOption("citrus", citrusDefinition),

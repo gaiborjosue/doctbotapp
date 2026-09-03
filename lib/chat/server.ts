@@ -50,7 +50,7 @@ export async function getDocBotSessionContext(
 
   const { data: processingJob, error: processingError } = await supabase
     .from("docbot_processing_jobs")
-    .select("id, output_json, output_text, status")
+    .select("evidence_text, id, output_json, output_text, status")
     .eq("id", session.processing_job_id)
     .eq("user_id", userId)
     .maybeSingle()
@@ -61,7 +61,8 @@ export async function getDocBotSessionContext(
     })
   }
 
-  const sourceContext = processingJob?.output_text?.trim()
+  const sourceContext =
+    processingJob?.evidence_text?.trim() ?? processingJob?.output_text?.trim()
   if (
     !processingJob ||
     processingJob.status !== "completed" ||

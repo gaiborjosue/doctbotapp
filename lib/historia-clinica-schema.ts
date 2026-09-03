@@ -58,6 +58,9 @@ export const historiaClinicaDraftSchema = buildZodSchema(
 export const historiaClinicaLeafKeys = collectLeafKeys(
   historiaClinicaJsonSchema
 )
+export const historiaClinicaFieldMetadata = collectFieldMetadata(
+  historiaClinicaJsonSchema
+)
 
 function enrichHistoriaClinicaSchema(schema: JsonSchemaRoot) {
   setDescription(
@@ -330,4 +333,41 @@ function collectLeafKeys(node: JsonSchemaNode, prefix = ""): string[] {
   return Object.entries(node.properties).flatMap(([key, value]) =>
     collectLeafKeys(value, prefix ? `${prefix}.${key}` : key)
   )
+}
+
+function collectFieldMetadata(
+  node: JsonSchemaNode,
+  prefix = ""
+): Array<{
+  description: string
+  label: string
+  path: string
+  sectionLabel: string
+}> {
+  if (node.$ref || isNullableString(node.type)) {
+    if (!prefix) return []
+
+    const label = humanizeSchemaKey(prefix.split(".").at(-1)!)
+    const sectionLabel = humanizeSchemaKey(prefix.split(".")[0])
+    return [
+      {
+        description: node.description ?? `${label} dentro de ${sectionLabel}.`,
+        label,
+        path: prefix,
+        sectionLabel,
+      },
+    ]
+  }
+
+  if (node.type !== "object" || !node.properties) return []
+
+  return Object.entries(node.properties).flatMap(([key, value]) =>
+    collectFieldMetadata(value, prefix ? `${prefix}.${key}` : key)
+  )
+}
+
+function humanizeSchemaKey(value: string) {
+  return value
+    .replaceAll("_", " ")
+    .replace(/^./, (character) => character.toLocaleUpperCase("es"))
 }

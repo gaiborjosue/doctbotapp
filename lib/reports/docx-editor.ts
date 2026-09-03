@@ -73,7 +73,7 @@ export async function applyClinicalDocumentReplacements({
         const matches = body.search(operation.search, {
           matchCase: operation.matchCase,
         })
-        matches.load("items")
+        matches.load()
         await context.sync()
 
         const selectedMatches = operation.replaceAll

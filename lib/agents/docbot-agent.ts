@@ -1,11 +1,21 @@
 import "server-only"
 
 import { createGoogle, type GoogleLanguageModelOptions } from "@ai-sdk/google"
+import {
+  createOpenAICompatible,
+  type OpenAICompatibleLanguageModelChatOptions,
+} from "@ai-sdk/openai-compatible"
 import { InferAgentUIMessage, tool, ToolLoopAgent } from "ai"
 import { z } from "zod"
 
 import { pruneDocBotModelMessages } from "@/lib/chat/context-pruning"
 import type { DocBotMessageMetadata } from "@/lib/chat/context-types"
+import {
+  DEFAULT_DOCBOT_CHAT_MODEL_ID,
+  DOCBOT_CHAT_MODEL_IDS,
+  MERCURY_CHAT_MODEL_ID,
+  type DocBotChatModelId,
+} from "@/lib/chat/models"
 import { clinicalDocumentReplacementSchema } from "@/lib/reports/docx-editor"
 import { editCurrentDocBotReport } from "@/lib/reports/server"
 import { createClient } from "@/lib/supabase/server"
@@ -14,6 +24,7 @@ export const GEMINI_CHAT_MODEL_ID =
   process.env.GEMINI_CHAT_MODEL?.trim() || "gemini-2.5-flash"
 
 const docBotCallOptionsSchema = z.object({
+  chatModelId: z.enum(DOCBOT_CHAT_MODEL_IDS),
   conversationSummary: z.string().max(250_000).nullable(),
   currentDocumentText: z.string().max(1_000_000).nullable(),
   documentRevisionNumber: z.number().int().positive().nullable(),
@@ -80,6 +91,13 @@ const baseInstructions = [
 ].join("\n")
 
 const google = createGoogle({ apiKey: getGeminiApiKey() })
+const inception = createOpenAICompatible({
+  apiKey: process.env.INCEPTION_API_KEY?.trim(),
+  baseURL: "https://api.inceptionlabs.ai/v1",
+  includeUsage: true,
+  name: "inception",
+  supportsStructuredOutputs: true,
+})
 const NIL_UUID = "00000000-0000-0000-0000-000000000000"
 
 export type DocBotCallOptions = z.infer<typeof docBotCallOptionsSchema>
@@ -114,24 +132,39 @@ export const docBotAgent = new ToolLoopAgent({
   instructions: baseInstructions,
   maxOutputTokens: 2_048,
   maxRetries: 2,
-  providerOptions: {
-    google: {
-      thinkingConfig: {
-        includeThoughts: true,
-      },
-    } satisfies GoogleLanguageModelOptions,
-  },
   temperature: 0.3,
-  prepareCall: ({ options, ...settings }) => ({
-    ...settings,
-    instructions: buildDocBotAgentInstructions(options),
-    toolsContext: {
-      editClinicalDocument: {
-        sessionId: options.sessionId,
-        userId: options.userId,
+  prepareCall: ({ options, ...settings }) => {
+    const isMercury = options.chatModelId === MERCURY_CHAT_MODEL_ID
+    const providerOptions: NonNullable<typeof settings.providerOptions> =
+      isMercury
+        ? {
+            inception: {
+              reasoningEffort: "instant",
+            } satisfies OpenAICompatibleLanguageModelChatOptions,
+          }
+        : {
+            google: {
+              thinkingConfig: {
+                includeThoughts: true,
+              },
+            } satisfies GoogleLanguageModelOptions,
+          }
+
+    return {
+      ...settings,
+      instructions: buildDocBotAgentInstructions(options),
+      model: isMercury
+        ? inception("mercury-2.5")
+        : google(GEMINI_CHAT_MODEL_ID),
+      providerOptions,
+      toolsContext: {
+        editClinicalDocument: {
+          sessionId: options.sessionId,
+          userId: options.userId,
+        },
       },
-    },
-  }),
+    }
+  },
   prepareStep: ({ messages }) => ({
     messages: pruneDocBotModelMessages(messages),
   }),
@@ -147,4 +180,11 @@ function getGeminiApiKey() {
   if (!apiKey) throw new Error("GEMINI_API_KEY is not configured.")
 
   return apiKey
+}
+
+export function isDocBotChatModelConfigured(modelId: DocBotChatModelId) {
+  return (
+    modelId === DEFAULT_DOCBOT_CHAT_MODEL_ID ||
+    Boolean(process.env.INCEPTION_API_KEY?.trim())
+  )
 }

@@ -10,11 +10,13 @@
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
+    "test:template-chunks": "node --test --experimental-strip-types tests/template-analysis-chunks.test.mjs",
     "avatars:generate": "node scripts/convert-avatar-studio-project.mjs",
     "postinstall": "node scripts/copy-vad-assets.mjs"
   },
   "dependencies": {
     "@ai-sdk/google": "4.0.50",
+    "@ai-sdk/openai-compatible": "3.0.37",
     "@ai-sdk/react": "4.0.80",
     "@aws-sdk/client-s3": "3.1116.0",
     "@aws-sdk/s3-request-presigner": "3.1116.0",
@@ -41,7 +43,6 @@
     "motion": "^13.1.1",
     "nanoid": "^6.0.1",
     "next": "16.2.6",
-    "next-themes": "^0.4.6",
     "onnxruntime-web": "1.27.0",
     "pizzip": "3.2.0",
     "react": "19.2.4",

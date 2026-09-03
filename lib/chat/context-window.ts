@@ -20,6 +20,10 @@ import {
   type DocBotContextSnapshot,
 } from "@/lib/chat/context-types"
 import {
+  DEFAULT_DOCBOT_CHAT_MODEL_ID,
+  type DocBotChatModelId,
+} from "@/lib/chat/models"
+import {
   getAllDocBotSessionMessages,
   updateDocBotConversationSummary,
   type DocBotSessionContext,
@@ -50,9 +54,11 @@ export class DocBotContextBudgetError extends Error {
 }
 
 export async function prepareDocBotContextWindow({
+  chatModelId = DEFAULT_DOCBOT_CHAT_MODEL_ID,
   context,
   supabase,
 }: {
+  chatModelId?: DocBotChatModelId
   context: DocBotSessionContext
   supabase: SupabaseClient<Database>
 }): Promise<PreparedDocBotContext> {
@@ -79,7 +85,7 @@ export async function prepareDocBotContextWindow({
     )
   }
 
-  let callOptions = createCallOptions(workingContext)
+  let callOptions = createCallOptions(workingContext, chatModelId)
   let inputTokens = await countPreparedInputTokens(
     callOptions,
     unsummarizedRows.map(({ message }) => message)
@@ -96,7 +102,7 @@ export async function prepareDocBotContextWindow({
       supabase,
     })
     unsummarizedRows = unsummarizedRows.slice(-10)
-    callOptions = createCallOptions(workingContext)
+    callOptions = createCallOptions(workingContext, chatModelId)
     inputTokens = await countPreparedInputTokens(
       callOptions,
       unsummarizedRows.map(({ message }) => message)
@@ -124,8 +130,12 @@ export async function prepareDocBotContextWindow({
   }
 }
 
-function createCallOptions(context: DocBotSessionContext): DocBotCallOptions {
+function createCallOptions(
+  context: DocBotSessionContext,
+  chatModelId: DocBotChatModelId
+): DocBotCallOptions {
   return {
+    chatModelId,
     conversationSummary: context.conversationSummary,
     currentDocumentText: context.currentDocumentText,
     documentRevisionNumber: context.documentRevisionNumber,

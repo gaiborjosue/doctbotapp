@@ -5,6 +5,7 @@ import { useActionState, useState } from "react"
 
 import { signIn, signUp, type AuthActionState } from "@/app/auth/actions"
 import { Button } from "@/components/ui/button"
+import { FlickeringGrid } from "@/components/ui/flickering-grid"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
@@ -28,8 +29,21 @@ export function AuthForm({ confirmationFailed = false }) {
   const isPending = mode === "sign-in" ? isSigningIn : isSigningUp
 
   return (
-    <main className="flex min-h-svh items-center justify-center bg-background px-4 py-10 text-foreground">
-      <section className="w-full max-w-sm" aria-labelledby="auth-title">
+    <main className="relative isolate flex min-h-svh items-center justify-center overflow-hidden bg-background px-4 py-10 text-foreground">
+      <FlickeringGrid
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_72%_62%_at_50%_48%,rgba(0,0,0,0.16)_0%,rgba(0,0,0,0.5)_48%,black_100%)]"
+        color="var(--muted-foreground)"
+        flickerChance={0.08}
+        gridGap={8}
+        maxOpacity={0.16}
+        squareSize={3}
+      />
+
+      <section
+        className="relative w-full max-w-sm"
+        aria-labelledby="auth-title"
+      >
         <div className="mb-8 text-center">
           <p className="mb-3 text-sm font-medium tracking-tight">DocBot</p>
           <h1 id="auth-title" className="text-xl font-semibold tracking-tight">
